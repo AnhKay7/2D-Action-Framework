@@ -113,7 +113,7 @@ public class Player : MonoBehaviour
     {
         Input.GetPlayerInput();
         StateMachine.CurrentState.FrameUpdate();
-        CombatController.FrameUpdate(Input.IsFacingRight ? 1 : -1);
+        CombatController.FrameUpdate(Input.IsFacingRight ? 1 : -1, StateMachine.CurrentState.CanAttack);
         HandleActionRequests();
     }
     private void FixedUpdate()

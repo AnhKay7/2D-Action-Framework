@@ -840,7 +840,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatController
   combatPivot: {fileID: 1855257715}
   horizontalHitbox: {fileID: 1764899375}
-  attiveTime: 0.3
+  windupTime: 0.05
+  activeTime: 0.1
+  recoveryTime: 0.08
 --- !u!1 &1687933614
 GameObject:
   m_ObjectHideFlags: 0

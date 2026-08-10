@@ -1,23 +1,54 @@
-using System;
 using UnityEngine;
 
 public class PlayerCombatController : MonoBehaviour
 {
     [SerializeField] private Transform combatPivot;
     [SerializeField] private AttackHitBox horizontalHitbox;
-    [SerializeField] private float attiveTime = 0.3f;
+    [SerializeField] private float windupTime = 0.1f;
+    [SerializeField] private float activeTime = 0.15f;
+    [SerializeField] private float recoveryTime = 0.05f;
 
     private int attackDirection;
     private float nextAttackAllowTime = -100f;
-    private bool isAttacking;
-    private float attackEndTime;
+    private AttackPhase attackPhase = AttackPhase.Idle;
+    private float actionEndTime;
 
-    public void FrameUpdate(int facingDirection)
+    private enum AttackPhase
     {
-        if (isAttacking)
+        Idle,
+        WindUp,
+        Active,
+        Recovery
+    }
+
+    public void FrameUpdate(int facingDirection, bool stateAllowAttack)
+    {
+        if (attackPhase != AttackPhase.Idle)
         {
-            if (Time.time >= attackEndTime || attackDirection != facingDirection)
+            if (!stateAllowAttack)
+            {
                 EndAttack();
+                return;
+            }
+            if (Time.time >= actionEndTime)
+            {
+                if (attackPhase == AttackPhase.WindUp)
+                {
+                    StartActive();
+                    return;
+                }
+                if (attackPhase == AttackPhase.Active)
+                {
+                    EndActive();
+                    StartRecovery();
+                    return;
+                }
+                if (attackPhase == AttackPhase.Recovery)
+                {
+                    EndAttack();
+                    return;
+                }
+            }
         }
     }
     public bool CanAttack(bool stateAllowAttack)
@@ -25,7 +56,7 @@ public class PlayerCombatController : MonoBehaviour
         if (!stateAllowAttack)
             return false;
 
-        if (isAttacking)
+        if (attackPhase != AttackPhase.Idle)
             return false;
 
         if (Time.time < nextAttackAllowTime)
@@ -45,19 +76,31 @@ public class PlayerCombatController : MonoBehaviour
         UpdateCombatPivot(facingDirection);
         attackDirection = facingDirection;
 
-        isAttacking = true;
+        attackPhase = AttackPhase.WindUp;
 
-        attackEndTime = Time.time + attiveTime;
-        nextAttackAllowTime = Time.time + attiveTime;
-
-        horizontalHitbox.Activate();
+        actionEndTime = Time.time + windupTime;
+        nextAttackAllowTime = Time.time + windupTime + activeTime + recoveryTime;
     }
 
     private void EndAttack()
     {
+        attackPhase = AttackPhase.Idle;
+        EndActive();
+    }
+    private void StartActive()
+    {
+        attackPhase = AttackPhase.Active;
+        horizontalHitbox.Activate();
+        actionEndTime = Time.time + activeTime;
+    }
+    private void EndActive()
+    {
         horizontalHitbox.Deactivate();
-
-        isAttacking = false;
+    }
+    private void StartRecovery()
+    {
+        attackPhase = AttackPhase.Recovery;
+        actionEndTime = Time.time + recoveryTime;
     }
     private void UpdateCombatPivot(int facingDirection)
     {
