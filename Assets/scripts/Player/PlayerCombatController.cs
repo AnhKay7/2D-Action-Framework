@@ -4,9 +4,9 @@ public class PlayerCombatController : MonoBehaviour
 {
     [SerializeField] private Transform combatPivot;
     [SerializeField] private AttackHitBox horizontalHitbox;
-    [SerializeField] private float windupTime = 0.1f;
-    [SerializeField] private float activeTime = 0.15f;
-    [SerializeField] private float recoveryTime = 0.05f;
+    [SerializeField] private float windupTime = 0.05f;
+    [SerializeField] private float activeTime = 0.1f;
+    [SerializeField] private float recoveryTime = 0.08f;
 
     private int attackDirection;
     private float nextAttackAllowTime = -100f;
