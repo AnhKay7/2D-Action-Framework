@@ -141,7 +141,12 @@ public class Player : MonoBehaviour
     {
         if (Input.AttackInput)
         {
-            CombatController.TryAttack(StateMachine.CurrentState.CanAttack, Input.IsFacingRight ? 1 : -1);
+            if (CombatController.TryAttack(
+                    StateMachine.CurrentState.CanAttack,
+                    Input.IsFacingRight ? 1 : -1,
+                    Input.AttackVerticalDirection,
+                    Ground.IsGrounded))
+                Input.UseAttackInput();
         }
     }
 }

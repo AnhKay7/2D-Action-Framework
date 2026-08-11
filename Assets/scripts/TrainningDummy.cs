@@ -1,22 +1,12 @@
 using System;
 using UnityEngine;
 
-public class TrainningDummy : MonoBehaviour, IDamageable
+public class TrainningDummy : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
+    [SerializeField] private Health health;
     private void Awake()
     {
-        currentHealth = maxHealth;
-    }
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-
-        Debug.Log($"Dummy took {damage}. HP: {currentHealth}");
-
-        if (currentHealth <= 0)
-            Die();
+        health.OnDeath += Die;
     }
     private void Die()
     {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackHitBox : MonoBehaviour
@@ -5,7 +6,7 @@ public class AttackHitBox : MonoBehaviour
     [SerializeField] private int damage = 10;
 
     private Collider2D hitbox;
-
+    private HashSet <IDamageable> damagedTargets = new();
     private void Awake()
     {
         hitbox = GetComponent<Collider2D>();
@@ -13,6 +14,7 @@ public class AttackHitBox : MonoBehaviour
     }
     public void Activate()
     {
+        damagedTargets.Clear();
         hitbox.enabled = true;
     }
     public void Deactivate()
@@ -23,8 +25,10 @@ public class AttackHitBox : MonoBehaviour
     {
         if (collision.TryGetComponent<IDamageable>(out var damageable))
         {
-            Debug.Log("Hit!!!");
-            damageable.TakeDamage(damage);
+            if (damagedTargets.Add(damageable))
+            {
+                damageable.TakeDamage(damage);
+            }
         }
     }
 }
