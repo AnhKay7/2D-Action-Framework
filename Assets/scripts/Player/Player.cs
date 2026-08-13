@@ -63,6 +63,7 @@ public class Player : MonoBehaviour
     #region Component
     public PlayerInput Input { get; private set; }
     public KinematicCharacterController Movement { get; private set; }
+    public VelocityResolver VelResolver { get; private set; } = new VelocityResolver();
     public GroundSensor Ground { get; private set; }
     public WallSensor Wall { get; private set; }
     public PlayerDashController DashController { get; private set; }
@@ -126,8 +127,10 @@ public class Player : MonoBehaviour
         if (Ground.IsGrounded || Wall.IsTouchingWall)
             DashController.ResetAirDashes();
 
+        VelResolver.SetBaseXY(Movement.velocityX, Movement.velocityY);
         StateMachine.CurrentState.PhysicUpdate();
-
+        VelResolver.Resolve();
+        Movement.SetVelocityXY(VelResolver.VelocityX, VelResolver.VelocityY);
         Movement.PhysicsUpdate();
     }
     public void ConsumeAllJumpGraces() //coyote, wall coyote

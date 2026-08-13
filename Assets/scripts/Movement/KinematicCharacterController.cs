@@ -80,7 +80,7 @@ public class KinematicCharacterController : MonoBehaviour
                 return expectedDeltaY;
             }
 
-            return direction * Mathf.Max(hit.distance - SKIN_WIDTH - EPSILON, 0f);
+            return direction * (hit.distance - SKIN_WIDTH - EPSILON);
         }
 
         return expectedDeltaY;
@@ -101,7 +101,7 @@ public class KinematicCharacterController : MonoBehaviour
 
         if (hit.collider != null)
         {
-            return direction * Mathf.Max(hit.distance - SKIN_WIDTH - EPSILON, 0f);
+            return direction * (hit.distance - SKIN_WIDTH - EPSILON);
         }
 
         return expectedDeltaX;

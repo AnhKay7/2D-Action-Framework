@@ -10,7 +10,7 @@ public class PlayerIdleState : PlayerGroundState
 
         base.EnterState();
 
-        //player.Movement.SetVelocityX(0f);
+        //player.VelResolver.SetBaseX(0f);
 
     }
     public override bool FrameUpdate()
@@ -29,10 +29,10 @@ public class PlayerIdleState : PlayerGroundState
     public override void PhysicUpdate()
     {
         base.PhysicUpdate();
-        float velocityX = player.Movement.velocityX;
+        float velocityX = player.VelResolver.baseVelocityX;
         float cur_deceleration = player.Ground.IsGrounded ? player.GroundDecel : player.AirDecel;
         velocityX = Mathf.MoveTowards(velocityX, 0f, cur_deceleration * Time.fixedDeltaTime);
 
-        player.Movement.SetVelocityX(velocityX);
+        player.VelResolver.SetBaseX(velocityX);
     }
 }

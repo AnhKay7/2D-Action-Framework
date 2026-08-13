@@ -18,7 +18,7 @@ public abstract class PlayerInAirState : PlayerMovementState
     {
         base.PhysicUpdate();
 
-        float velocityX = player.Movement.velocityX;
+        float velocityX = player.VelResolver.baseVelocityX;
         float moveDirection = player.Input.MoveDirection;
 
         float curAirControl = 1f;
@@ -51,6 +51,6 @@ public abstract class PlayerInAirState : PlayerMovementState
         {
             velocityX = Mathf.MoveTowards(velocityX, 0f, player.AirDecel * Time.fixedDeltaTime);
         }
-        player.Movement.SetVelocityX(velocityX);
+        player.VelResolver.SetBaseX(velocityX);
     }
 }

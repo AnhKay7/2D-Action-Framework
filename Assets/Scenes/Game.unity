@@ -1048,7 +1048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9152778f4a2b34c48ab0c3c5fe70103d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInput
-  jumpBufferTime: 0.15
+  jumpBufferTime: 0.2
   dashBufferTime: 0.15
   attackBufferTime: 0.1
 --- !u!114 &1687913277

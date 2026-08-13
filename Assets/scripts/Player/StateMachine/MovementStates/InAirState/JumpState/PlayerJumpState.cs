@@ -6,21 +6,26 @@ public class PlayerJumpState : PlayerInAirState
     {
     }
 
+    private bool jumpApplied;
+    private bool jumpCutRequested;
     public override void EnterState()
     {
         base.EnterState();
+        jumpApplied = false;
+        jumpCutRequested = false;
         player.ConsumeAllJumpGraces();
-        ExecuteJump();
     }
 
     private void ExecuteJump()
     {
         float targetVelocityY = Mathf.Sqrt(player.JumpHeight * -2 * (Physics2D.gravity.y * player.GravityScale));
+
         if (!player.Input.JumpHeld)
         {
             targetVelocityY *= player.JumpCutMultiplier;
         }
-        player.Movement.SetVelocityY(targetVelocityY);
+
+        player.VelResolver.RequestOverrideY(targetVelocityY);
     }
     private void CutJump()
     {
@@ -28,22 +33,39 @@ public class PlayerJumpState : PlayerInAirState
 
         velocityY *= player.JumpCutMultiplier;
 
-        player.Movement.SetVelocityY(velocityY);
+        player.VelResolver.RequestOverrideY(velocityY);
     }
 
     public override bool FrameUpdate()
     {
         if (base.FrameUpdate())
             return true;
-        if (player.Input.JumpReleased && player.Movement.velocityY > 0)
+        if (player.Input.JumpReleased)
         {
-            CutJump();
+            jumpCutRequested = true;
         }
-        if (player.Movement.velocityY <= 0f)
+        if (jumpApplied)
         {
-            stateMachine.ChangeState(player.FallState);
-            return true;
+            if (player.Movement.velocityY <= 0f)
+            {
+                stateMachine.ChangeState(player.FallState);
+                return true;
+            }
         }
         return false;
+    }
+    public override void PhysicUpdate()
+    {
+        base.PhysicUpdate();
+        if (!jumpApplied)
+        {
+            ExecuteJump();
+            jumpApplied = true;
+        }
+        else if (jumpCutRequested)
+        {
+            jumpCutRequested = false;
+            CutJump();
+        }
     }
 }

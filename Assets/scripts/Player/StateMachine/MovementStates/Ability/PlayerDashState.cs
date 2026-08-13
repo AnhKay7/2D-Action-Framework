@@ -13,11 +13,11 @@ public class PlayerDashState : PlayerAbilityState
     {
         base.EnterState();
         player.Input.UseDashInput();
-            
+
         if (player.Wall.IsTouchingWall)
         {
             dashDirection = -player.Wall.WallDirection;
-        }   
+        }
         else if (player.Input.MoveDirection != 0f)
         {
             dashDirection = player.Input.MoveDirection;
@@ -58,7 +58,6 @@ public class PlayerDashState : PlayerAbilityState
     public override void PhysicUpdate()
     {
         base.PhysicUpdate();
-        player.Movement.SetVelocityY(0f);
-        player.Movement.SetVelocityX(dashDirection * player.DashController.DashSpeed);
+        player.VelResolver.RequestDominant(dashDirection * player.DashController.DashSpeed, 0f);
     }
 }

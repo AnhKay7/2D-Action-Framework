@@ -9,8 +9,7 @@ public class PlayerWallJumpState : PlayerJumpState
     public override void EnterState()
     {
         base.EnterState();
-        player.Movement.SetVelocityX(player.WallJumpForce * -player.Wall.WallDirection);
+        player.VelResolver.RequestOverrideX(player.WallJumpForce * -player.Wall.WallDirection);
         wallJumpInputUnlockTime = Time.time + player.WallJumpDuration;
-        Debug.Log(player.Wall.WallDirection);
     }
 }
