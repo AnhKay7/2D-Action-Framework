@@ -9,6 +9,11 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private float windupTime = 0.05f;
     [SerializeField] private float activeTime = 0.1f;
     [SerializeField] private float recoveryTime = 0.08f;
+    [SerializeField] private float horizontalHitRecoilSpeed = 10f;
+    [SerializeField] private float recoilDuration = 0.16f;
+    [SerializeField] private float pogoLauchedHeigth = 2.5f;
+    [SerializeField] private PlayerImpulseController impulseController;
+    private float gravityScale;
 
     private float nextAttackAllowTime = -100f;
     private AttackPhase attackPhase = AttackPhase.Idle;
@@ -26,9 +31,18 @@ public class PlayerCombatController : MonoBehaviour
     {
         Up,
         Down,
-        Horizontal
+        Right,
+        Left
     }
-
+    private void Awake()
+    {
+        horizontalHitbox.HitConfirmed += ApplyForce;
+        downHitbox.HitConfirmed += ApplyForce;
+    }
+    public void Initialize(float GravityScale)
+    {
+        gravityScale = GravityScale;
+    }
     public void FrameUpdate(int facingDirection, bool stateAllowAttack)
     {
         if (attackPhase != AttackPhase.Idle)
@@ -89,7 +103,10 @@ public class PlayerCombatController : MonoBehaviour
         }
         else
         {
-            currentAttackDirection = AttackDirection.Horizontal;
+            if (facingDirection == 1)
+                currentAttackDirection = AttackDirection.Right;
+            else
+                currentAttackDirection = AttackDirection.Left;
             currentHitBox = horizontalHitbox;
         }
 
@@ -133,5 +150,21 @@ public class PlayerCombatController : MonoBehaviour
         Vector3 scale = combatPivot.localScale;
         scale.x = Mathf.Abs(scale.x) * facingDirection;
         combatPivot.localScale = scale;
+    }
+    private void ApplyForce()
+    {
+        if (currentAttackDirection == AttackDirection.Right 
+            || currentAttackDirection == AttackDirection.Left)
+        {
+            int attackDirection = (currentAttackDirection == AttackDirection.Right ? 1 : -1);
+            impulseController.ApplyHorizontalVelocity(-attackDirection * horizontalHitRecoilSpeed, recoilDuration);
+        }
+
+        if (currentAttackDirection == AttackDirection.Down)
+        {
+            impulseController.ApplyVerticalVelocity(
+                PlayerPhysicsUtility.CalculateLaunchVelocity(pogoLauchedHeigth, Physics2D.gravity.y * gravityScale)
+                );
+        }
     }
 }

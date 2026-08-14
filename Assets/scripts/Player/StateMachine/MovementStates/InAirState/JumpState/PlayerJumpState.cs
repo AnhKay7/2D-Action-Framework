@@ -20,24 +20,25 @@ public class PlayerJumpState : PlayerInAirState
 
     private void ExecuteJump()
     {
-        float targetVelocityY = Mathf.Sqrt(player.JumpHeight * -2 * (Physics2D.gravity.y * player.GravityScale));
-
+        float targetVelocityY = PlayerPhysicsUtility.CalculateLaunchVelocity(player.JumpHeight, Physics2D.gravity.y * player.GravityScale);
+        
         if (!player.Input.JumpHeld)
         {
             jumpCutApplied = true;
             targetVelocityY *= player.JumpCutMultiplier;
         }
 
-        player.VelResolver.RequestOverrideY(targetVelocityY);
+        player.VelocityResolver.RequestOverrideY(targetVelocityY);
     }
     private void CutJump()
     {
-        float velocityY = player.VelResolver.baseVelocityY;
+        float velocityY = player.VelocityResolver.baseVelocityY;
 
         velocityY *= player.JumpCutMultiplier;
         jumpCutApplied = true;
 
-        player.VelResolver.RequestOverrideY(velocityY);
+        if (velocityY > 0)
+            player.VelocityResolver.RequestOverrideY(velocityY);
     }
 
     public override bool FrameUpdate()

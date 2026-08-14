@@ -41,11 +41,11 @@ public class PlayerWallSlideState : PlayerMovementState
     public override void PhysicUpdate()
     {
         base.PhysicUpdate();
-        float velocityY = player.VelResolver.baseVelocityY;
+        float velocityY = player.VelocityResolver.baseVelocityY;
         if (velocityY < 0f)
         {
             velocityY = Mathf.Max(velocityY, player.WallSlideSpeed);
-            player.VelResolver.SetBaseY(velocityY);
+            player.VelocityResolver.SetBaseY(velocityY);
         }
     }
 }

@@ -27,7 +27,7 @@ public class PlayerMoveState : PlayerGroundState
     {
         base.PhysicUpdate();
         const float EPSILON = 0.001f;
-        float velocityX = player.VelResolver.baseVelocityX;
+        float velocityX = player.VelocityResolver.baseVelocityX;
 
         bool isTurning = Mathf.Sign(player.Input.MoveDirection) != Mathf.Sign(velocityX)
                     && Mathf.Abs(velocityX) > EPSILON;
@@ -35,7 +35,7 @@ public class PlayerMoveState : PlayerGroundState
         velocityX += player.Input.MoveDirection * curAcceleration * Time.fixedDeltaTime;
         velocityX = Mathf.Clamp(velocityX, -player.MaxMoveSpeed, player.MaxMoveSpeed);
 
-        player.VelResolver.SetBaseX(velocityX);
+        player.VelocityResolver.SetBaseX(velocityX);
     }
     public override void ExitState()
     {

@@ -28,7 +28,7 @@ public class PlayerMovementState : PlayerState
     public override void PhysicUpdate()
     {
         base.PhysicUpdate();
-        float velocityY = player.VelResolver.baseVelocityY;
+        float velocityY = player.VelocityResolver.baseVelocityY;
         float gravity = Physics2D.gravity.y * player.GravityScale;
 
         if (velocityY < 0)
@@ -39,6 +39,6 @@ public class PlayerMovementState : PlayerState
         velocityY += gravity * Time.fixedDeltaTime;
         velocityY = Mathf.Max(velocityY, player.MaxFallSpeed);
 
-        player.VelResolver.SetBaseY(velocityY);
+        player.VelocityResolver.SetBaseY(velocityY);
     }
 }

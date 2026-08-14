@@ -63,11 +63,15 @@ public class Player : MonoBehaviour
     #region Component
     public PlayerInput Input { get; private set; }
     public KinematicCharacterController Movement { get; private set; }
-    public VelocityResolver VelResolver { get; private set; } = new VelocityResolver();
     public GroundSensor Ground { get; private set; }
     public WallSensor Wall { get; private set; }
     public PlayerDashController DashController { get; private set; }
     public PlayerCombatController CombatController { get; private set; }
+    public PlayerImpulseController ImpulseController { get; private set; }
+    #endregion
+
+    #region Runtime Systems
+    public VelocityResolver VelocityResolver { get; private set; } = new VelocityResolver();
     #endregion
 
     #region StateMachine
@@ -96,6 +100,7 @@ public class Player : MonoBehaviour
         Wall = GetComponent<WallSensor>();
         DashController = GetComponent<PlayerDashController>();
         CombatController = GetComponent<PlayerCombatController>();
+        ImpulseController = GetComponent<PlayerImpulseController>();
 
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine);
@@ -109,6 +114,8 @@ public class Player : MonoBehaviour
     private void Start()
     {
         StateMachine.Initialize(IdleState);
+        ImpulseController.Initialize(VelocityResolver);
+        CombatController.Initialize(gravityScale);
     }
     private void Update()
     {
@@ -127,10 +134,11 @@ public class Player : MonoBehaviour
         if (Ground.IsGrounded || Wall.IsTouchingWall)
             DashController.ResetAirDashes();
 
-        VelResolver.SetBaseXY(Movement.velocityX, Movement.velocityY);
+        VelocityResolver.SetBaseXY(Movement.velocityX, Movement.velocityY);
         StateMachine.CurrentState.PhysicUpdate();
-        VelResolver.Resolve();
-        Movement.SetVelocityXY(VelResolver.VelocityX, VelResolver.VelocityY);
+        ImpulseController.PhysicsUpdate();
+        VelocityResolver.Resolve();
+        Movement.SetVelocityXY(VelocityResolver.VelocityX, VelocityResolver.VelocityY);
         Movement.PhysicsUpdate();
     }
     public void ConsumeAllJumpGraces() //coyote, wall coyote

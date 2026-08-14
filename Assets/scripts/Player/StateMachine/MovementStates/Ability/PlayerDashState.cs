@@ -58,6 +58,6 @@ public class PlayerDashState : PlayerAbilityState
     public override void PhysicUpdate()
     {
         base.PhysicUpdate();
-        player.VelResolver.RequestDominant(dashDirection * player.DashController.DashSpeed, 0f);
+        player.VelocityResolver.RequestDominant(dashDirection * player.DashController.DashSpeed, 0f);
     }
 }

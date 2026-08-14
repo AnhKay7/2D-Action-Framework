@@ -19,7 +19,7 @@ public class PlayerWallJumpState : PlayerJumpState
         if (!jumpForceApplied)
         {
             jumpForceApplied = true;
-            player.VelResolver.RequestOverrideX(player.WallJumpForce * -player.Wall.WallDirection);
+            player.VelocityResolver.RequestOverrideX(player.WallJumpForce * -player.Wall.WallDirection);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class AttackHitBox : MonoBehaviour
 
     private Collider2D hitbox;
     private HashSet <IDamageable> damagedTargets = new();
+    public event Action HitConfirmed;
     private void Awake()
     {
         hitbox = GetComponent<Collider2D>();
@@ -27,6 +29,7 @@ public class AttackHitBox : MonoBehaviour
         {
             if (damagedTargets.Add(damageable))
             {
+                HitConfirmed?.Invoke();
                 damageable.TakeDamage(damage);
             }
         }
