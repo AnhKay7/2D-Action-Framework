@@ -8,11 +8,13 @@ public class PlayerJumpState : PlayerInAirState
 
     private bool jumpApplied;
     private bool jumpCutRequested;
+    private bool jumpCutApplied;
     public override void EnterState()
     {
         base.EnterState();
         jumpApplied = false;
         jumpCutRequested = false;
+        jumpCutApplied = false;
         player.ConsumeAllJumpGraces();
     }
 
@@ -22,6 +24,7 @@ public class PlayerJumpState : PlayerInAirState
 
         if (!player.Input.JumpHeld)
         {
+            jumpCutApplied = true;
             targetVelocityY *= player.JumpCutMultiplier;
         }
 
@@ -29,9 +32,10 @@ public class PlayerJumpState : PlayerInAirState
     }
     private void CutJump()
     {
-        float velocityY = player.Movement.velocityY;
+        float velocityY = player.VelResolver.baseVelocityY;
 
         velocityY *= player.JumpCutMultiplier;
+        jumpCutApplied = true;
 
         player.VelResolver.RequestOverrideY(velocityY);
     }
@@ -62,7 +66,7 @@ public class PlayerJumpState : PlayerInAirState
             ExecuteJump();
             jumpApplied = true;
         }
-        else if (jumpCutRequested)
+        else if (jumpCutRequested && !jumpCutApplied)
         {
             jumpCutRequested = false;
             CutJump();
