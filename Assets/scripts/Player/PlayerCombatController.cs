@@ -13,7 +13,7 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private float recoilDuration = 0.16f;
     [SerializeField] private float pogoLauchedHeigth = 2.5f;
     private AttackExecutor attackExecutor;
-    private PlayerImpulseController impulseController;
+    private ImpulseController impulseController;
     private float gravityScale;
     private AttackDirection currentAttackDirection;
     private float actionEndTime;
@@ -27,15 +27,15 @@ public class PlayerCombatController : MonoBehaviour
     }
     private void Awake()
     {
-        impulseController = GetComponent<PlayerImpulseController>();
         attackExecutor = new AttackExecutor();
 
         horizontalHitbox.HitConfirmed += ApplyForce;
         downHitbox.HitConfirmed += ApplyForce;
     }
-    public void Initialize(float GravityScale)
+    public void Initialize(float GravityScale, ImpulseController impulseController)
     {
         gravityScale = GravityScale;
+        this.impulseController = impulseController;
     }
     public void FrameUpdate(bool stateAllowAttack)
     {
@@ -96,12 +96,12 @@ public class PlayerCombatController : MonoBehaviour
             || currentAttackDirection == AttackDirection.Left)
         {
             int attackDirection = (currentAttackDirection == AttackDirection.Right ? 1 : -1);
-            impulseController.ApplyHorizontalVelocity(-attackDirection * horizontalHitRecoilSpeed, recoilDuration);
+            impulseController.ApplyHorizontalOverrideVelocity(-attackDirection * horizontalHitRecoilSpeed, recoilDuration);
         }
 
         if (currentAttackDirection == AttackDirection.Down)
         {
-            impulseController.ApplyVerticalVelocity(
+            impulseController.ApplyVerticalOverrideVelocityOneshot(
                 PlayerPhysicsUtility.CalculateLaunchVelocity(pogoLauchedHeigth, Physics2D.gravity.y * gravityScale)
                 );
         }

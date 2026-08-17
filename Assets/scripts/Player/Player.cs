@@ -70,10 +70,10 @@ public class Player : Entity
     public WallSensor Wall { get; private set; }
     public PlayerDashController DashController { get; private set; }
     public PlayerCombatController CombatController { get; private set; }
-    public PlayerImpulseController ImpulseController { get; private set; }
     #endregion
 
     #region Runtime Systems
+    public ImpulseController ImpulseController { get; private set; } = new ImpulseController();
     public VelocityResolver VelocityResolver { get; private set; } = new VelocityResolver();
     #endregion
 
@@ -103,7 +103,6 @@ public class Player : Entity
         Wall = GetComponent<WallSensor>();
         DashController = GetComponent<PlayerDashController>();
         CombatController = GetComponent<PlayerCombatController>();
-        ImpulseController = GetComponent<PlayerImpulseController>();
 
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine);
@@ -117,8 +116,7 @@ public class Player : Entity
     private void Start()
     {
         StateMachine.Initialize(IdleState);
-        ImpulseController.Initialize(VelocityResolver);
-        CombatController.Initialize(gravityScale);
+        CombatController.Initialize(gravityScale, ImpulseController);
     }
     private void Update()
     {
@@ -139,8 +137,10 @@ public class Player : Entity
 
         VelocityResolver.SetBaseXY(Movement.velocityX, Movement.velocityY);
         StateMachine.CurrentState.PhysicUpdate();
-        ImpulseController.PhysicsUpdate();
+        ImpulseController.PhysicsUpdate(VelocityResolver);
+
         VelocityResolver.Resolve();
+
         Movement.SetVelocityXY(VelocityResolver.VelocityX, VelocityResolver.VelocityY);
         Movement.PhysicsUpdate();
     }

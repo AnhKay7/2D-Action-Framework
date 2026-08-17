@@ -10,10 +10,12 @@ public class Enemy : Entity
     public EnemyMovement MovementController { get; private set; }
     public GroundSensor Ground { get; private set; }
     public EnemyCombat Combat { get; private set; }
+    public KnockbackReceiver Knockback { get; private set; }
     #endregion
 
     #region Runtime Systems
     public VelocityResolver VelocityResolver { get; private set; } = new VelocityResolver();
+    public ImpulseController ImpulseController { get; private set; } = new ImpulseController();
     #endregion
 
     #region Gravity
@@ -29,6 +31,9 @@ public class Enemy : Entity
         MovementController = GetComponent<EnemyMovement>();
         Ground = GetComponent<GroundSensor>();
         Combat = GetComponent<EnemyCombat>();
+
+        Knockback = GetComponent<KnockbackReceiver>();
+        Knockback.Initialize(ImpulseController);
 
         Health.OnDeath += Die;
     }
@@ -54,6 +59,7 @@ public class Enemy : Entity
 
         MovementController.PhysicsUpdate(VelocityResolver);
         Combat.PhysicsUpdate(VelocityResolver);
+        ImpulseController.PhysicsUpdate(VelocityResolver);
 
         VelocityResolver.Resolve();
         Movement.SetVelocityXY(VelocityResolver.VelocityX, VelocityResolver.VelocityY);

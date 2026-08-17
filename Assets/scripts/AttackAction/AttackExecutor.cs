@@ -34,7 +34,7 @@ public class AttackExecutor
             return;
         }
         currentHitBox?.Deactivate();
-        currentHitBox = null;
+        EndAttack();
     }
     public bool IsAttacking()
     {

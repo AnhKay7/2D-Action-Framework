@@ -366,6 +366,7 @@ GameObject:
   - component: {fileID: 570564403}
   - component: {fileID: 570564402}
   - component: {fileID: 570564408}
+  - component: {fileID: 570564413}
   - component: {fileID: 570564407}
   m_Layer: 8
   m_Name: Enemy
@@ -592,6 +593,18 @@ MonoBehaviour:
   windupTime: 0.4
   activeTime: 0.1
   recoveryTime: 0.15
+--- !u!114 &570564413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570564401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ee57de646e820043bacc54de02f2be8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KnockbackReceiver
 --- !u!1 &659673741
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,6 +757,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackHitBox
   damage: 5
+  applyXKnockback: 1
+  velocityXKnockback: 8
+  applyYKnockback: 0
+  velocityYKnockback: 0
+  knockbackDuration: 0.08
 --- !u!1 &840486697
 GameObject:
   m_ObjectHideFlags: 0
@@ -915,6 +933,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackHitBox
   damage: 10
+  applyXKnockback: 0
+  velocityXKnockback: 3
+  applyYKnockback: 0
+  velocityYKnockback: 0
+  knockbackDuration: 0.08
 --- !u!50 &1040759779
 Rigidbody2D:
   serializedVersion: 5
@@ -1293,6 +1316,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackHitBox
   damage: 10
+  applyXKnockback: 0
+  velocityXKnockback: 3
+  applyYKnockback: 0
+  velocityYKnockback: 0
+  knockbackDuration: 0.08
 --- !u!50 &1580531175
 Rigidbody2D:
   serializedVersion: 5
@@ -1398,7 +1426,6 @@ GameObject:
   - component: {fileID: 1687913273}
   - component: {fileID: 1687913277}
   - component: {fileID: 1687913278}
-  - component: {fileID: 1687913279}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -1601,21 +1628,9 @@ MonoBehaviour:
   windupTime: 0.05
   activeTime: 0.1
   recoveryTime: 0.08
-  horizontalHitRecoilSpeed: 10
-  recoilDuration: 0.16
+  horizontalHitRecoilSpeed: 8
+  recoilDuration: 0.14
   pogoLauchedHeigth: 2.5
---- !u!114 &1687913279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1687913269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b9acc3ef281850479aacee1158ad096, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerImpulseController
 --- !u!1 &1687933614
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,6 +1800,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackHitBox
   damage: 10
+  applyXKnockback: 1
+  velocityXKnockback: 20
+  applyYKnockback: 0
+  velocityYKnockback: 0
+  knockbackDuration: 0.08
 --- !u!61 &1764899376
 BoxCollider2D:
   m_ObjectHideFlags: 0

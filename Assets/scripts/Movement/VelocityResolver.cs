@@ -37,6 +37,14 @@ public class VelocityResolver
         dominantVelocityX = x;
         dominantVelocityY = y;
     }
+    public void RequestDominantX(float x)
+    {
+        dominantVelocityX = x;
+    }
+    public void RequestDominantY(float y)
+    {
+        dominantVelocityY = y;
+    }
     public void Resolve()
     {
         VelocityX = baseVelocityX;
