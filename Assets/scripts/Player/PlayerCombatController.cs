@@ -12,21 +12,12 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private float horizontalHitRecoilSpeed = 10f;
     [SerializeField] private float recoilDuration = 0.16f;
     [SerializeField] private float pogoLauchedHeigth = 2.5f;
-    [SerializeField] private PlayerImpulseController impulseController;
+    private AttackExecutor attackExecutor;
+    private PlayerImpulseController impulseController;
     private float gravityScale;
-
-    private float nextAttackAllowTime = -100f;
-    private AttackPhase attackPhase = AttackPhase.Idle;
     private AttackDirection currentAttackDirection;
     private float actionEndTime;
     private AttackHitBox currentHitBox;
-    private enum AttackPhase
-    {
-        Idle,
-        WindUp,
-        Active,
-        Recovery
-    }
     private enum AttackDirection
     {
         Up,
@@ -36,6 +27,9 @@ public class PlayerCombatController : MonoBehaviour
     }
     private void Awake()
     {
+        impulseController = GetComponent<PlayerImpulseController>();
+        attackExecutor = new AttackExecutor();
+
         horizontalHitbox.HitConfirmed += ApplyForce;
         downHitbox.HitConfirmed += ApplyForce;
     }
@@ -43,45 +37,20 @@ public class PlayerCombatController : MonoBehaviour
     {
         gravityScale = GravityScale;
     }
-    public void FrameUpdate(int facingDirection, bool stateAllowAttack)
+    public void FrameUpdate(bool stateAllowAttack)
     {
-        if (attackPhase != AttackPhase.Idle)
+        if (attackExecutor.IsAttacking() && !stateAllowAttack)
         {
-            if (!stateAllowAttack)
-            {
-                EndAttack();
-                return;
-            }
-            if (Time.time >= actionEndTime)
-            {
-                if (attackPhase == AttackPhase.WindUp)
-                {
-                    StartActive();
-                    return;
-                }
-                if (attackPhase == AttackPhase.Active)
-                {
-                    EndActive();
-                    StartRecovery();
-                    return;
-                }
-                if (attackPhase == AttackPhase.Recovery)
-                {
-                    EndAttack();
-                    return;
-                }
-            }
+            attackExecutor.CancelAttack();
         }
+        attackExecutor.FrameUpdate();
     }
     public bool CanAttack(bool stateAllowAttack)
     {
         if (!stateAllowAttack)
             return false;
 
-        if (attackPhase != AttackPhase.Idle)
-            return false;
-
-        if (Time.time < nextAttackAllowTime)
+        if (!attackExecutor.CanAttack())
             return false;
 
         return true;
@@ -110,41 +79,11 @@ public class PlayerCombatController : MonoBehaviour
             currentHitBox = horizontalHitbox;
         }
 
-        StartAttack(facingDirection);
+        UpdateCombatPivot(facingDirection);
+        attackExecutor.TryStartAttack(currentHitBox, windupTime, activeTime, recoveryTime);
         return true;
     }
-    private void StartAttack(int facingDirection)
-    {
-        UpdateCombatPivot(facingDirection);
 
-        attackPhase = AttackPhase.WindUp;
-
-        actionEndTime = Time.time + windupTime;
-        nextAttackAllowTime = Time.time + windupTime + activeTime + recoveryTime;
-    }
-
-    private void EndAttack()
-    {
-        attackPhase = AttackPhase.Idle;
-        EndActive();
-    }
-    private void StartActive()
-    {
-        attackPhase = AttackPhase.Active;
-
-        currentHitBox.Activate();
-
-        actionEndTime = Time.time + activeTime;
-    }
-    private void EndActive()
-    {
-        currentHitBox.Deactivate();
-    }
-    private void StartRecovery()
-    {
-        attackPhase = AttackPhase.Recovery;
-        actionEndTime = Time.time + recoveryTime;
-    }
     private void UpdateCombatPivot(int facingDirection)
     {
         Vector3 scale = combatPivot.localScale;
@@ -153,7 +92,7 @@ public class PlayerCombatController : MonoBehaviour
     }
     private void ApplyForce()
     {
-        if (currentAttackDirection == AttackDirection.Right 
+        if (currentAttackDirection == AttackDirection.Right
             || currentAttackDirection == AttackDirection.Left)
         {
             int attackDirection = (currentAttackDirection == AttackDirection.Right ? 1 : -1);

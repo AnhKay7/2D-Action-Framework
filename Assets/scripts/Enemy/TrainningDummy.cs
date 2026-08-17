@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-public class TrainningDummy : MonoBehaviour
+public class TrainningDummy : Entity
 {
     [SerializeField] private Health health;
     private void Awake()

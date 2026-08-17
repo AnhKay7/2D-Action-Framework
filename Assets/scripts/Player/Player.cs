@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Entity
 {
+    #region Entity
+    //protected override Faction EntityFration => Faction.Player;
+    #endregion
 
     #region Movement Config
     [Header("Movement")]
@@ -121,7 +124,7 @@ public class Player : MonoBehaviour
     {
         Input.GetPlayerInput();
         StateMachine.CurrentState.FrameUpdate();
-        CombatController.FrameUpdate(Input.IsFacingRight ? 1 : -1, StateMachine.CurrentState.CanAttack);
+        CombatController.FrameUpdate(StateMachine.CurrentState.CanAttack);
         HandleActionRequests();
     }
     private void FixedUpdate()

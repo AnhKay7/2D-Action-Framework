@@ -15,7 +15,7 @@ public abstract class PlayerState
 
     public virtual void EnterState()
     {
-        Debug.Log("hello from " + stateMachine.CurrentState.ToString());
+        //Debug.Log("hello from " + stateMachine.CurrentState.ToString());
     }
 
     public virtual void ExitState()
