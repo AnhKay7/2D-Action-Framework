@@ -3,6 +3,7 @@ using UnityEngine;
 public class EnemyCombat : MonoBehaviour
 {
     #region Component
+    private Entity owner;
     private Entity target;
     private GroundSensor ground;
     private AttackExecutor attackExecutor;
@@ -21,6 +22,7 @@ public class EnemyCombat : MonoBehaviour
 
     private void Awake()
     {
+        owner = GetComponentInParent<Entity>();
         ground = GetComponent<GroundSensor>();
         attackExecutor = new AttackExecutor();
         attackEffectProcessor = new AttackEffectProcessor();
@@ -72,6 +74,6 @@ public class EnemyCombat : MonoBehaviour
     }
     private void HandleTargetHit(Entity target)
     {
-        return;
+        attackEffectProcessor.ApplyAttackEffect(owner, target, horizontalAttack);
     }
 }

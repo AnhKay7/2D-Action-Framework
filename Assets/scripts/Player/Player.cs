@@ -70,6 +70,8 @@ public class Player : Entity
     public WallSensor Wall { get; private set; }
     public PlayerDashController DashController { get; private set; }
     public PlayerCombatController CombatController { get; private set; }
+    public KnockbackReceiver KnockbackReceiver { get; private set; }
+    public Health Health { get; private set; }
     #endregion
 
     #region Runtime Systems
@@ -103,6 +105,10 @@ public class Player : Entity
         Wall = GetComponent<WallSensor>();
         DashController = GetComponent<PlayerDashController>();
         CombatController = GetComponent<PlayerCombatController>();
+        KnockbackReceiver = GetComponent<KnockbackReceiver>();
+        Health = GetComponent<Health>();
+
+        Health.OnDeath += Die;
 
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine);
@@ -117,6 +123,7 @@ public class Player : Entity
     {
         StateMachine.Initialize(IdleState);
         CombatController.Initialize(gravityScale, ImpulseController);
+        KnockbackReceiver.Initialize(ImpulseController);
     }
     private void Update()
     {
@@ -162,5 +169,10 @@ public class Player : Entity
                     Ground.IsGrounded))
                 Input.UseAttackInput();
         }
+    }
+    private void Die()
+    {
+        Debug.Log("YOU DIE!");
+        Destroy(gameObject);
     }
 }

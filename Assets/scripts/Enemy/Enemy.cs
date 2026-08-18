@@ -31,11 +31,13 @@ public class Enemy : Entity
         MovementController = GetComponent<EnemyMovement>();
         Ground = GetComponent<GroundSensor>();
         Combat = GetComponent<EnemyCombat>();
-
         Knockback = GetComponent<KnockbackReceiver>();
-        Knockback.Initialize(ImpulseController);
 
         Health.OnDeath += Die;
+    }
+    private void Start()
+    {
+        Knockback.Initialize(ImpulseController);
     }
     private void Die()
     {

@@ -10,6 +10,7 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private AttackData downAttack;
 
     [Header("Player Hit Response")]
+    [SerializeField] private float hitstopDuration = 0.04f;
     [SerializeField] private float horizontalHitRecoilSpeed = 10f;
     [SerializeField] private float recoilDuration = 0.16f;
     [SerializeField] private float pogoLauchedHeigth = 2.5f;
@@ -110,6 +111,8 @@ public class PlayerCombatController : MonoBehaviour
                 PlayerPhysicsUtility.CalculateLaunchVelocity(pogoLauchedHeigth, Physics2D.gravity.y * gravityScale)
                 );
         }
+
+        HitstopController.Instance.DoHitstop(hitstopDuration);
     }
     #endregion
 
