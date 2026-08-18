@@ -2,35 +2,36 @@ using UnityEngine;
 
 public class PlayerCombatController : MonoBehaviour
 {
+    #region Config
+    [Header("Hitbox")]
     [SerializeField] private Transform combatPivot;
-    [SerializeField] private AttackHitBox horizontalHitbox;
-    [SerializeField] private AttackHitBox upHitbox;
-    [SerializeField] private AttackHitBox downHitbox;
-    [SerializeField] private float windupTime = 0.05f;
-    [SerializeField] private float activeTime = 0.1f;
-    [SerializeField] private float recoveryTime = 0.08f;
+    [SerializeField] private AttackData horizontalAttack;
+    [SerializeField] private AttackData upAttack;
+    [SerializeField] private AttackData downAttack;
+
+    [Header("Player Hit Response")]
     [SerializeField] private float horizontalHitRecoilSpeed = 10f;
     [SerializeField] private float recoilDuration = 0.16f;
     [SerializeField] private float pogoLauchedHeigth = 2.5f;
+    #endregion
+
+    #region Variable & component
+    private Entity owner;
     private AttackExecutor attackExecutor;
+    private AttackEffectProcessor attackEffectProcessor;
     private ImpulseController impulseController;
     private float gravityScale;
-    private AttackDirection currentAttackDirection;
-    private float actionEndTime;
-    private AttackHitBox currentHitBox;
-    private enum AttackDirection
-    {
-        Up,
-        Down,
-        Right,
-        Left
-    }
+    private AttackData currentAttack;
+    #endregion
     private void Awake()
     {
+        owner = GetComponentInParent<Entity>();
+        attackEffectProcessor = new AttackEffectProcessor();
         attackExecutor = new AttackExecutor();
 
-        horizontalHitbox.HitConfirmed += ApplyForce;
-        downHitbox.HitConfirmed += ApplyForce;
+        horizontalAttack.HitBox.HitConfirmed += HandleTargetHit;
+        downAttack.HitBox.HitConfirmed += HandleTargetHit;
+        upAttack.HitBox.HitConfirmed += HandleTargetHit;
     }
     public void Initialize(float GravityScale, ImpulseController impulseController)
     {
@@ -45,6 +46,8 @@ public class PlayerCombatController : MonoBehaviour
         }
         attackExecutor.FrameUpdate();
     }
+
+    #region Attack lifecycle
     public bool CanAttack(bool stateAllowAttack)
     {
         if (!stateAllowAttack)
@@ -62,25 +65,19 @@ public class PlayerCombatController : MonoBehaviour
 
         if (attackVerticalDirection == 1)
         {
-            currentAttackDirection = AttackDirection.Up;
-            currentHitBox = upHitbox;
+            currentAttack = upAttack;
         }
         else if (attackVerticalDirection == -1 && !isGrounded)
         {
-            currentAttackDirection = AttackDirection.Down;
-            currentHitBox = downHitbox;
+            currentAttack = downAttack;
         }
         else
         {
-            if (facingDirection == 1)
-                currentAttackDirection = AttackDirection.Right;
-            else
-                currentAttackDirection = AttackDirection.Left;
-            currentHitBox = horizontalHitbox;
+            currentAttack = horizontalAttack;
         }
 
         UpdateCombatPivot(facingDirection);
-        attackExecutor.TryStartAttack(currentHitBox, windupTime, activeTime, recoveryTime);
+        attackExecutor.TryStartAttack(currentAttack);
         return true;
     }
 
@@ -90,20 +87,30 @@ public class PlayerCombatController : MonoBehaviour
         scale.x = Mathf.Abs(scale.x) * facingDirection;
         combatPivot.localScale = scale;
     }
-    private void ApplyForce()
+    #endregion
+
+    #region Hit Response
+    private void HandleTargetHit(Entity target)
     {
-        if (currentAttackDirection == AttackDirection.Right
-            || currentAttackDirection == AttackDirection.Left)
+        attackEffectProcessor.ApplyAttackEffect(owner, target, currentAttack);
+        ApplySelfResponse(target);
+    }
+    private void ApplySelfResponse(Entity target)
+    {
+        if (currentAttack == horizontalAttack)
         {
-            int attackDirection = (currentAttackDirection == AttackDirection.Right ? 1 : -1);
+            float deltaX = target.transform.position.x - transform.position.x;
+            int attackDirection = (deltaX > 0 ? 1 : -1);
             impulseController.ApplyHorizontalOverrideVelocity(-attackDirection * horizontalHitRecoilSpeed, recoilDuration);
         }
 
-        if (currentAttackDirection == AttackDirection.Down)
+        if (currentAttack == downAttack)
         {
             impulseController.ApplyVerticalOverrideVelocityOneshot(
                 PlayerPhysicsUtility.CalculateLaunchVelocity(pogoLauchedHeigth, Physics2D.gravity.y * gravityScale)
                 );
         }
     }
+    #endregion
+
 }

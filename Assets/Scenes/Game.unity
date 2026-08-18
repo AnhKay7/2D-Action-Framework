@@ -587,12 +587,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2d29438b15750842a47a6adf1226778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
-  horizontalHitBox: {fileID: 762774784}
+  horizontalAttack:
+    damage: 5
+    applyXKnockback: 0
+    knockbackX: 0
+    applyYKnockback: 0
+    knockbackY: 0
+    knockbackDuration: 0
+    hitBox: {fileID: 762774784}
+    windupTime: 0.4
+    activeTime: 0.1
+    recoveryTime: 0.2
   combatPivot: {fileID: 659673742}
   allowAttackDistance: 2
-  windupTime: 0.4
-  activeTime: 0.1
-  recoveryTime: 0.15
 --- !u!114 &570564413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,12 +763,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f9b69c3b183bda469eb7a12574d4218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackHitBox
-  damage: 5
-  applyXKnockback: 1
-  velocityXKnockback: 8
-  applyYKnockback: 0
-  velocityYKnockback: 0
-  knockbackDuration: 0.08
 --- !u!1 &840486697
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,12 +933,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f9b69c3b183bda469eb7a12574d4218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackHitBox
-  damage: 10
-  applyXKnockback: 0
-  velocityXKnockback: 3
-  applyYKnockback: 0
-  velocityYKnockback: 0
-  knockbackDuration: 0.08
 --- !u!50 &1040759779
 Rigidbody2D:
   serializedVersion: 5
@@ -1315,12 +1310,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f9b69c3b183bda469eb7a12574d4218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackHitBox
-  damage: 10
-  applyXKnockback: 0
-  velocityXKnockback: 3
-  applyYKnockback: 0
-  velocityYKnockback: 0
-  knockbackDuration: 0.08
 --- !u!50 &1580531175
 Rigidbody2D:
   serializedVersion: 5
@@ -1622,14 +1611,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatController
   combatPivot: {fileID: 1855257715}
-  horizontalHitbox: {fileID: 1764899375}
-  upHitbox: {fileID: 1040759778}
-  downHitbox: {fileID: 1580531174}
-  windupTime: 0.05
-  activeTime: 0.1
-  recoveryTime: 0.08
+  horizontalAttack:
+    damage: 10
+    applyXKnockback: 1
+    knockbackX: 10
+    applyYKnockback: 0
+    knockbackY: 0
+    knockbackDuration: 0.2
+    hitBox: {fileID: 1764899375}
+    windupTime: 0.1
+    activeTime: 0.1
+    recoveryTime: 0.15
+  upAttack:
+    damage: 10
+    applyXKnockback: 0
+    knockbackX: 0
+    applyYKnockback: 0
+    knockbackY: 0
+    knockbackDuration: 0
+    hitBox: {fileID: 1040759778}
+    windupTime: 0.1
+    activeTime: 0.1
+    recoveryTime: 0.15
+  downAttack:
+    damage: 10
+    applyXKnockback: 0
+    knockbackX: 0
+    applyYKnockback: 0
+    knockbackY: 0
+    knockbackDuration: 0
+    hitBox: {fileID: 1580531174}
+    windupTime: 0.1
+    activeTime: 0.1
+    recoveryTime: 0.15
   horizontalHitRecoilSpeed: 8
-  recoilDuration: 0.14
+  recoilDuration: 0.1
   pogoLauchedHeigth: 2.5
 --- !u!1 &1687933614
 GameObject:
@@ -1799,12 +1815,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f9b69c3b183bda469eb7a12574d4218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackHitBox
-  damage: 10
-  applyXKnockback: 1
-  velocityXKnockback: 20
-  applyYKnockback: 0
-  velocityYKnockback: 0
-  knockbackDuration: 0.08
 --- !u!61 &1764899376
 BoxCollider2D:
   m_ObjectHideFlags: 0

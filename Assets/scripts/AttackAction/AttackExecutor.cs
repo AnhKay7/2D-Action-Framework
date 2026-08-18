@@ -2,12 +2,9 @@ using UnityEngine;
 
 public class AttackExecutor
 {
-    private float windupTime;
-    private float activeTime;
-    private float recoveryTime;
+    private AttackData currentAttack;
     private AttackPhase attackPhase = AttackPhase.Idle;
     private float actionEndTime;
-    private AttackHitBox currentHitBox;
     private enum AttackPhase
     {
         Idle,
@@ -33,7 +30,7 @@ public class AttackExecutor
             StartRecovery();
             return;
         }
-        currentHitBox?.Deactivate();
+        currentAttack.HitBox?.Deactivate();
         EndAttack();
     }
     public bool IsAttacking()
@@ -66,40 +63,38 @@ public class AttackExecutor
         }
     }
     #region Attack Cycle
-    public bool TryStartAttack(AttackHitBox requestHitBox, float windup, float active, float recovery)
+    public bool TryStartAttack(AttackData attackData)
     {
         if (!CanAttack())
             return false;
-        windupTime = windup;
-        activeTime = active;
-        recoveryTime = recovery;
-        currentHitBox = requestHitBox;
+
+        currentAttack = attackData;
         attackPhase = AttackPhase.WindUp;
-        actionEndTime = Time.time + windupTime;
+        actionEndTime = Time.time + attackData.WindupTime;
         return true;
     }
 
     private void EndAttack()
     {
         attackPhase = AttackPhase.Idle;
-        currentHitBox = null;
+        currentAttack = null;
     }
     private void StartActive()
     {
         attackPhase = AttackPhase.Active;
 
-        currentHitBox?.Activate();
+        currentAttack.HitBox?.Activate();
 
-        actionEndTime = Time.time + activeTime;
+        actionEndTime = Time.time + currentAttack.ActiveTime;
     }
     private void EndActive()
     {
-        currentHitBox?.Deactivate();
+        currentAttack.HitBox?.Deactivate();
     }
     private void StartRecovery()
     {
         attackPhase = AttackPhase.Recovery;
-        actionEndTime = Time.time + recoveryTime;
+        actionEndTime = Time.time + currentAttack.RecoveryTime;
     }
     #endregion
 }

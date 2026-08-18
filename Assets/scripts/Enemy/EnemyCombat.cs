@@ -6,24 +6,26 @@ public class EnemyCombat : MonoBehaviour
     private Entity target;
     private GroundSensor ground;
     private AttackExecutor attackExecutor;
+    private AttackEffectProcessor attackEffectProcessor;
     #endregion
 
     #region HitBox 
-    [SerializeField] private AttackHitBox horizontalHitBox;
+    [SerializeField] private AttackData horizontalAttack;
     [SerializeField] private Transform combatPivot;
     #endregion
 
     #region Setting
     [SerializeField] private float allowAttackDistance = 2f;
-    [SerializeField] private float windupTime = 0.4f;
-    [SerializeField] private float activeTime = 0.1f;
-    [SerializeField] private float recoveryTime = 0.15f;
+
     #endregion
 
     private void Awake()
     {
         ground = GetComponent<GroundSensor>();
         attackExecutor = new AttackExecutor();
+        attackEffectProcessor = new AttackEffectProcessor();
+
+        horizontalAttack.HitBox.HitConfirmed += HandleTargetHit;
     }
     public void SetTarget(Entity target)
     {
@@ -44,7 +46,7 @@ public class EnemyCombat : MonoBehaviour
         float deltaX = target.transform.position.x - transform.position.x;
         int attackDirection = deltaX > 0 ? 1 : -1;
         UpdateCombatPivot(attackDirection);
-        attackExecutor.TryStartAttack(horizontalHitBox, windupTime, activeTime, recoveryTime);
+        attackExecutor.TryStartAttack(horizontalAttack);
     }
     public void FrameUpdate(bool stateAllowAttack = true)
     {
@@ -67,5 +69,9 @@ public class EnemyCombat : MonoBehaviour
         {
             velocityResolver.RequestOverrideX(0f);
         }
+    }
+    private void HandleTargetHit(Entity target)
+    {
+        return;
     }
 }
