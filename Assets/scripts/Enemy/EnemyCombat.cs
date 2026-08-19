@@ -75,5 +75,6 @@ public class EnemyCombat : MonoBehaviour
     private void HandleTargetHit(Entity target)
     {
         attackEffectProcessor.ApplyAttackEffect(owner, target, horizontalAttack);
+        CombatFeedbackController.Instance.OnHit(owner, target);
     }
 }

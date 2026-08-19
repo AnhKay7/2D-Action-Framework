@@ -14,8 +14,11 @@ public class AttackData
     [SerializeField] private float knockbackY;
     public float KnockbackY => knockbackY;
 
-    [SerializeField] private float knockbackDuration;
-    public float KnockbackDuration => knockbackDuration;
+    [SerializeField] private float knockbackXDuration;
+    public float KnockbackXDuration => knockbackXDuration;
+
+    [SerializeField] private float knockbackYDuration;
+    public float KnockbackYDuration => knockbackYDuration;
 
     [SerializeField] private AttackHitBox hitBox;
     public AttackHitBox HitBox => hitBox;

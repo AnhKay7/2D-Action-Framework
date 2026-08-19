@@ -8,11 +8,11 @@ public class KnockbackReceiver : MonoBehaviour, IKnockbackable
     {
         this.impulseController = impulseController;
     }
-    public void ApplyKnockback(float? velocityX, float? velocityY, float duration)
+    public void ApplyKnockback(float? velocityX, float? velocityY, float durationX, float durationY)
     {
         if (velocityX != null)
-            impulseController.ApplyHorizontalDominantVelocity(velocityX.Value, duration);
+            impulseController.ApplyHorizontalDominantVelocity(velocityX.Value, durationX);
         if (velocityY != null)
-            impulseController.ApplyVerticalDominantVelocity(velocityY.Value, duration);
+            impulseController.ApplyVerticalDominantVelocity(velocityY.Value, durationY);
     }
 }

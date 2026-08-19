@@ -4,15 +4,13 @@ public class AttackEffectProcessor
     {
         ApplyDamageToTarget(target, attackData);
         ApplyKnockbackToTarget(attacker, target, attackData);
+        ApplyHitReactionToTarget(target);
     }
     private void ApplyDamageToTarget(Entity target, AttackData attackData)
     {
         IDamageable damageable = target.GetComponentInChildren<IDamageable>();
 
-        if (damageable != null)
-        {
-            damageable.TakeDamage(attackData.Damage);
-        }
+        damageable?.TakeDamage(attackData.Damage);
     }
     private void ApplyKnockbackToTarget(Entity attacker, Entity target, AttackData attackData)
     {
@@ -22,10 +20,13 @@ public class AttackEffectProcessor
         float? finalXKnockback = (attackData.ApplyXKnockback == false ? null : attackData.KnockbackX * direction);
         float? finalYKnockback = (attackData.ApplyYKnockback == false ? null : attackData.KnockbackY);
 
-        if (knockbackable != null)
-        {
-            knockbackable.ApplyKnockback(finalXKnockback, finalYKnockback, attackData.KnockbackDuration);
-        }
+        knockbackable?.ApplyKnockback(finalXKnockback, finalYKnockback, attackData.KnockbackXDuration, attackData.KnockbackYDuration);
+    }
+    private void ApplyHitReactionToTarget(Entity target)
+    {
+        HitReactionController reaction = target.GetComponentInChildren<HitReactionController>();
+
+        reaction?.ReactionToHit();
     }
     private int GetTargetDirectionFromAttacker(Entity attacker, Entity target)
     {
