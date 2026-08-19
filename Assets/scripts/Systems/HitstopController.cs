@@ -23,6 +23,7 @@ public class HitstopController : MonoBehaviour
     }
     public void DoHitstop(float duration)
     {
+        remainingTime = Mathf.Max(remainingTime, duration);
         if (!isHitstopActive)
             StartHitstop(duration);
     }

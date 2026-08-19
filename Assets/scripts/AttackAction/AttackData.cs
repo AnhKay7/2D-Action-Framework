@@ -28,4 +28,8 @@ public class AttackData
     public float ActiveTime => activeTime;
     [SerializeField] private float recoveryTime;
     public float RecoveryTime => recoveryTime;
+
+
+    [SerializeField] private float hitstunDuration;
+    public float HitstunDuration => hitstunDuration;
 }

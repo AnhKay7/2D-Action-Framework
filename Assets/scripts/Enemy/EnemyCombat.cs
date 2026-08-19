@@ -8,6 +8,7 @@ public class EnemyCombat : MonoBehaviour
     private GroundSensor ground;
     private AttackExecutor attackExecutor;
     private AttackEffectProcessor attackEffectProcessor;
+    private HitstunReceiver hitstunReceiver;
     #endregion
 
     #region HitBox 
@@ -24,6 +25,8 @@ public class EnemyCombat : MonoBehaviour
     {
         owner = GetComponentInParent<Entity>();
         ground = GetComponent<GroundSensor>();
+        hitstunReceiver = GetComponent<HitstunReceiver>();
+
         attackExecutor = new AttackExecutor();
         attackEffectProcessor = new AttackEffectProcessor();
 
@@ -52,7 +55,7 @@ public class EnemyCombat : MonoBehaviour
     }
     public void FrameUpdate(bool stateAllowAttack = true)
     {
-        if (!stateAllowAttack)
+        if (!stateAllowAttack || hitstunReceiver.IsHitstunned)
         {
             if (attackExecutor.IsAttacking())
                 attackExecutor.CancelAttack();
@@ -60,8 +63,10 @@ public class EnemyCombat : MonoBehaviour
         else if (target != null)
         {
             float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
-            if (distance <= allowAttackDistance)
+            if (distance <= allowAttackDistance) 
+            { 
                 TryAttack();
+            }
         }
         attackExecutor.FrameUpdate();
     }

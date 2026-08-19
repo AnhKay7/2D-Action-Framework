@@ -2,8 +2,13 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
+    private HitstunReceiver hitstunReceiver;
     [SerializeField] private float moveSpeed = 5f;
     private Entity Target;
+    private void Awake()
+    {
+        hitstunReceiver = GetComponent<HitstunReceiver>();
+    }
     public void SetTarget(Entity Target)
     {
         this.Target = Target;
@@ -25,6 +30,11 @@ public class EnemyMovement : MonoBehaviour
 
     public void PhysicsUpdate(VelocityResolver VelocityResolver)
     {
+        if (hitstunReceiver != null && hitstunReceiver.IsHitstunned)
+        {
+            VelocityResolver.SetBaseX(0f);
+            return;
+        }
         ChaseTarget(VelocityResolver);
     }
 }

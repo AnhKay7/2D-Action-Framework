@@ -4,6 +4,7 @@ public class AttackEffectProcessor
     {
         ApplyDamageToTarget(target, attackData);
         ApplyKnockbackToTarget(attacker, target, attackData);
+        AppHitstunToTarget(target, attackData);
         ApplyHitReactionToTarget(target);
     }
     private void ApplyDamageToTarget(Entity target, AttackData attackData)
@@ -27,6 +28,12 @@ public class AttackEffectProcessor
         HitReactionController reaction = target.GetComponentInChildren<HitReactionController>();
 
         reaction?.ReactionToHit();
+    }
+    private void AppHitstunToTarget(Entity target, AttackData attackData)
+    {
+        IHitstunnable hitstunnable = target.GetComponentInChildren<IHitstunnable>();
+
+        hitstunnable?.ApplyHitstun(attackData.HitstunDuration);
     }
     private int GetTargetDirectionFromAttacker(Entity attacker, Entity target)
     {

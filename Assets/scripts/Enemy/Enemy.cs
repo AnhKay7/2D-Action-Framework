@@ -11,6 +11,7 @@ public class Enemy : Entity
     public GroundSensor Ground { get; private set; }
     public EnemyCombat Combat { get; private set; }
     public KnockbackReceiver Knockback { get; private set; }
+    public HitstunReceiver HitstunReceiver { get; private set; }
     #endregion
 
     #region Runtime Systems

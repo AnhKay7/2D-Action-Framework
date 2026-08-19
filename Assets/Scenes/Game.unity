@@ -361,8 +361,10 @@ GameObject:
   - component: {fileID: 570564406}
   - component: {fileID: 570564405}
   - component: {fileID: 570564410}
+  - component: {fileID: 570564415}
   - component: {fileID: 570564412}
   - component: {fileID: 570564411}
+  - component: {fileID: 570564414}
   - component: {fileID: 570564403}
   - component: {fileID: 570564402}
   - component: {fileID: 570564408}
@@ -589,15 +591,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
   horizontalAttack:
     damage: 0
-    applyXKnockback: 0
-    knockbackX: 5
-    applyYKnockback: 0
-    knockbackY: 0
-    knockbackDuration: 3
+    applyXKnockback: 1
+    knockbackX: 12
+    applyYKnockback: 1
+    knockbackY: 7
+    knockbackXDuration: 0.1
+    knockbackYDuration: 0.03
     hitBox: {fileID: 762774784}
     windupTime: 0.3
     activeTime: 0.1
     recoveryTime: 0.3
+    hitstunDuration: 0
   combatPivot: {fileID: 659673742}
   allowAttackDistance: 1.5
 --- !u!114 &570564413
@@ -612,6 +616,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee57de646e820043bacc54de02f2be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KnockbackReceiver
+--- !u!114 &570564414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570564401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7829ffcd3d8a0d94492bceb5329bf035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitReactionController
+  spriteRenderer: {fileID: 570564405}
+  hitColor: {r: 1, g: 0.6470588, b: 0, a: 1}
+  flashDuration: 0.1
+--- !u!114 &570564415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570564401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 026ae383d12d4c54fbeb1407787f8acd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitstunReceiver
 --- !u!1 &659673741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1289,6 +1320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1342565158}
   - component: {fileID: 1342565157}
+  - component: {fileID: 1342565159}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -1323,6 +1355,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1342565159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342565156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8748f7aceb463924bb494aaeed2913c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatFeedbackController
+  localPlayer: {fileID: 1687913271}
+  cameraShakeImpact: 0
+  playerAttackImpactHitstop: 0.1
+  playerHitImpactHitstop: 0.2
 --- !u!1 &1580531173
 GameObject:
   m_ObjectHideFlags: 0
@@ -1461,6 +1509,7 @@ GameObject:
   - component: {fileID: 1687913278}
   - component: {fileID: 1687913280}
   - component: {fileID: 1687913279}
+  - component: {fileID: 1687913281}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -1660,39 +1709,44 @@ MonoBehaviour:
   horizontalAttack:
     damage: 10
     applyXKnockback: 1
-    knockbackX: 10
+    knockbackX: 24
     applyYKnockback: 0
-    knockbackY: 0
-    knockbackDuration: 0.2
+    knockbackY: 3
+    knockbackXDuration: 0.08
+    knockbackYDuration: 0
     hitBox: {fileID: 1764899375}
     windupTime: 0.1
     activeTime: 0.1
-    recoveryTime: 0.15
+    recoveryTime: 0.1
+    hitstunDuration: 0.2
   upAttack:
     damage: 10
     applyXKnockback: 0
     knockbackX: 0
-    applyYKnockback: 0
-    knockbackY: 0
-    knockbackDuration: 0
+    applyYKnockback: 1
+    knockbackY: 8
+    knockbackXDuration: 0
+    knockbackYDuration: 0.04
     hitBox: {fileID: 1040759778}
     windupTime: 0.1
     activeTime: 0.1
-    recoveryTime: 0.15
+    recoveryTime: 0.1
+    hitstunDuration: 0.2
   downAttack:
     damage: 10
     applyXKnockback: 0
     knockbackX: 0
     applyYKnockback: 0
     knockbackY: 0
-    knockbackDuration: 0
+    knockbackXDuration: 0
+    knockbackYDuration: 0
     hitBox: {fileID: 1580531174}
     windupTime: 0.1
     activeTime: 0.1
-    recoveryTime: 0.15
-  hitstopDuration: 0.08
-  horizontalHitRecoilSpeed: 8
-  recoilDuration: 0.1
+    recoveryTime: 0.1
+    hitstunDuration: 0.2
+  horizontalHitRecoilSpeed: 12
+  recoilDuration: 0.08
   pogoLauchedHeigth: 2.5
 --- !u!114 &1687913279
 MonoBehaviour:
@@ -1719,6 +1773,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   maxHealth: 100
+--- !u!114 &1687913281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687913269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7829ffcd3d8a0d94492bceb5329bf035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitReactionController
+  spriteRenderer: {fileID: 415838955}
+  hitColor: {r: 1, g: 0.6470588, b: 0, a: 1}
+  flashDuration: 0.1
 --- !u!1 &1687933614
 GameObject:
   m_ObjectHideFlags: 0
