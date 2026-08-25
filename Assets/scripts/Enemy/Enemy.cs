@@ -12,6 +12,7 @@ public class Enemy : Entity
     public EnemyCombat Combat { get; private set; }
     public KnockbackReceiver Knockback { get; private set; }
     public HitstunReceiver HitstunReceiver { get; private set; }
+    public HitReceiver HitReceiver { get; private set; }
     #endregion
 
     #region Runtime Systems
@@ -33,6 +34,8 @@ public class Enemy : Entity
         Ground = GetComponent<GroundSensor>();
         Combat = GetComponent<EnemyCombat>();
         Knockback = GetComponent<KnockbackReceiver>();
+        HitstunReceiver = GetComponent<HitstunReceiver>();
+        HitReceiver = GetComponent<HitReceiver>();
 
         Health.OnDeath += Die;
     }

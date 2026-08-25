@@ -7,6 +7,7 @@ public abstract class PlayerState
     protected PlayerStateMachine stateMachine;
     //protected string animation_name;
     public virtual bool CanAttack => true;
+    public virtual bool CanReceiveHit => true;
     public PlayerState(Player _player, PlayerStateMachine _stateMachine)
     {
         this.player = _player;

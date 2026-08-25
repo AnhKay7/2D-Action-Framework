@@ -21,6 +21,10 @@ public class EnemyCombat : MonoBehaviour
 
     #endregion
 
+    #region Variable & Helper
+    private int currentHorizontalAttackDirection;
+    #endregion
+
     private void Awake()
     {
         owner = GetComponentInParent<Entity>();
@@ -49,13 +53,18 @@ public class EnemyCombat : MonoBehaviour
         if (!ground.IsGrounded)
             return;
         float deltaX = target.transform.position.x - transform.position.x;
-        int attackDirection = deltaX > 0 ? 1 : -1;
-        UpdateCombatPivot(attackDirection);
+        currentHorizontalAttackDirection = deltaX > 0 ? 1 : -1;
+        
+        UpdateCombatPivot(currentHorizontalAttackDirection);
         attackExecutor.TryStartAttack(horizontalAttack);
     }
     public void FrameUpdate(bool stateAllowAttack = true)
     {
-        if (!stateAllowAttack || hitstunReceiver.IsHitstunned)
+        bool notAllowToAttack = !stateAllowAttack;
+        if (hitstunReceiver != null)
+            notAllowToAttack = notAllowToAttack || hitstunReceiver.IsHitstunned;
+
+        if (notAllowToAttack)
         {
             if (attackExecutor.IsAttacking())
                 attackExecutor.CancelAttack();
@@ -79,7 +88,7 @@ public class EnemyCombat : MonoBehaviour
     }
     private void HandleTargetHit(Entity target)
     {
-        attackEffectProcessor.ApplyAttackEffect(owner, target, horizontalAttack);
+        attackEffectProcessor.ApplyAttackEffectToTarget(owner, target, horizontalAttack, currentHorizontalAttackDirection);
         CombatFeedbackController.Instance.OnHit(owner, target);
     }
 }

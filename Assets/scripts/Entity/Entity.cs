@@ -12,4 +12,5 @@ public class Entity : MonoBehaviour
     [SerializeField] private Faction faction = Faction.Neutral;
 
     public Faction EntityFaction => faction;
+    public virtual bool CanReceiveHit => true;
 }

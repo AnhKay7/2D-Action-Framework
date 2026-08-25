@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class Player : Entity
 {
-    #region Entity
-    //protected override Faction EntityFration => Faction.Player;
-    #endregion
-
     #region Movement Config
     [Header("Movement")]
     [SerializeField] private float maxMoveSpeed = 8f;
@@ -170,9 +166,14 @@ public class Player : Entity
                 Input.UseAttackInput();
         }
     }
+
+    #region Entity
+    //protected override Faction EntityFration => Faction.Player;
+    public override bool CanReceiveHit => StateMachine?.CurrentState?.CanReceiveHit ?? false;
     private void Die()
     {
         Debug.Log("YOU DIE!");
         Destroy(gameObject);
     }
+    #endregion
 }
