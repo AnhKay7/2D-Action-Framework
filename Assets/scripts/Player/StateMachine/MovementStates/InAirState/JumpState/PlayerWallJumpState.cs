@@ -6,11 +6,20 @@ public class PlayerWallJumpState : PlayerJumpState
     {
     }
 
+    private bool jumpForceApplied;
     public override void EnterState()
     {
         base.EnterState();
-        player.Movement.SetVelocityX(player.WallJumpForce * -player.Wall.WallDirection);
+        jumpForceApplied = false;
         wallJumpInputUnlockTime = Time.time + player.WallJumpDuration;
-        Debug.Log(player.Wall.WallDirection);
+    }
+    public override void PhysicUpdate()
+    {
+        base.PhysicUpdate();
+        if (!jumpForceApplied)
+        {
+            jumpForceApplied = true;
+            player.VelocityResolver.RequestOverrideX(player.WallJumpForce * -player.Wall.WallDirection);
+        }
     }
 }

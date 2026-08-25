@@ -23,7 +23,7 @@ public class PlayerFallState : PlayerInAirState
                 return true;
             }
         }
-        if (player.Ground.IsGrounded && player.Movement.velocityY <= 0f)
+        if (player.Ground.IsGrounded && player.VelocityResolver.baseVelocityY <= 0f)
         {
             if (player.Input.MoveDirection != 0f)
             {

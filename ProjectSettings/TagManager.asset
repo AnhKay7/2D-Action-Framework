@@ -13,9 +13,9 @@ TagManager:
   - UI
   - Ground
   - OneWay Platform
-  - 
-  - 
-  - 
+  - Entity
+  - AttackHitBox
+  - Detection
   - 
   - 
   - 

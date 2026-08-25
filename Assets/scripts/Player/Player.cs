@@ -1,8 +1,7 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Entity
 {
-
     #region Movement Config
     [Header("Movement")]
     [SerializeField] private float maxMoveSpeed = 8f;
@@ -67,6 +66,15 @@ public class Player : MonoBehaviour
     public WallSensor Wall { get; private set; }
     public PlayerDashController DashController { get; private set; }
     public PlayerCombatController CombatController { get; private set; }
+    public KnockbackReceiver KnockbackReceiver { get; private set; }
+    public Health Health { get; private set; }
+    public HitReceiver HitReceiver { get; private set; }
+    public HitstunReceiver HitstunReceiver { get; private set; }
+    #endregion
+
+    #region Runtime Systems
+    public ImpulseController ImpulseController { get; private set; } = new ImpulseController();
+    public VelocityResolver VelocityResolver { get; private set; } = new VelocityResolver();
     #endregion
 
     #region StateMachine
@@ -78,6 +86,7 @@ public class Player : MonoBehaviour
     public PlayerJumpState JumpState { get; private set; }
     public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerWallSlideState WallSlideState { get; private set; }
+    public PlayerStunState StunState { get; private set; }
     #endregion
 
     #region TimeStamp
@@ -95,6 +104,12 @@ public class Player : MonoBehaviour
         Wall = GetComponent<WallSensor>();
         DashController = GetComponent<PlayerDashController>();
         CombatController = GetComponent<PlayerCombatController>();
+        KnockbackReceiver = GetComponent<KnockbackReceiver>();
+        Health = GetComponent<Health>();
+        HitReceiver = GetComponent<HitReceiver>();
+        HitstunReceiver = GetComponent<HitstunReceiver>();
+
+        Health.OnDeath += Die;
 
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine);
@@ -104,16 +119,19 @@ public class Player : MonoBehaviour
         WallJumpState = new PlayerWallJumpState(this, StateMachine);
         DashState = new PlayerDashState(this, StateMachine);
         WallSlideState = new PlayerWallSlideState(this, StateMachine);
+        StunState = new PlayerStunState(this, StateMachine);
     }
     private void Start()
     {
         StateMachine.Initialize(IdleState);
+        CombatController.Initialize(gravityScale, ImpulseController);
+        KnockbackReceiver.Initialize(ImpulseController);
     }
     private void Update()
     {
         Input.GetPlayerInput();
         StateMachine.CurrentState.FrameUpdate();
-        CombatController.FrameUpdate(Input.IsFacingRight ? 1 : -1, StateMachine.CurrentState.CanAttack);
+        CombatController.FrameUpdate(StateMachine.CurrentState.CanAttack);
         HandleActionRequests();
     }
     private void FixedUpdate()
@@ -126,8 +144,13 @@ public class Player : MonoBehaviour
         if (Ground.IsGrounded || Wall.IsTouchingWall)
             DashController.ResetAirDashes();
 
+        VelocityResolver.SetBaseXY(Movement.velocityX, Movement.velocityY);
         StateMachine.CurrentState.PhysicUpdate();
+        ImpulseController.PhysicsUpdate(VelocityResolver);
 
+        VelocityResolver.Resolve();
+
+        Movement.SetVelocityXY(VelocityResolver.VelocityX, VelocityResolver.VelocityY);
         Movement.PhysicsUpdate();
     }
     public void ConsumeAllJumpGraces() //coyote, wall coyote
@@ -149,4 +172,14 @@ public class Player : MonoBehaviour
                 Input.UseAttackInput();
         }
     }
+
+    #region Entity
+    //protected override Faction EntityFration => Faction.Player;
+    public override bool CanReceiveHit => StateMachine?.CurrentState?.CanReceiveHit ?? false;
+    private void Die()
+    {
+        Debug.Log("YOU DIE!");
+        Destroy(gameObject);
+    }
+    #endregion
 }
