@@ -68,6 +68,8 @@ public class Player : Entity
     public PlayerCombatController CombatController { get; private set; }
     public KnockbackReceiver KnockbackReceiver { get; private set; }
     public Health Health { get; private set; }
+    public HitReceiver HitReceiver { get; private set; }
+    public HitstunReceiver HitstunReceiver { get; private set; }
     #endregion
 
     #region Runtime Systems
@@ -84,6 +86,7 @@ public class Player : Entity
     public PlayerJumpState JumpState { get; private set; }
     public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerWallSlideState WallSlideState { get; private set; }
+    public PlayerStunState StunState { get; private set; }
     #endregion
 
     #region TimeStamp
@@ -103,6 +106,8 @@ public class Player : Entity
         CombatController = GetComponent<PlayerCombatController>();
         KnockbackReceiver = GetComponent<KnockbackReceiver>();
         Health = GetComponent<Health>();
+        HitReceiver = GetComponent<HitReceiver>();
+        HitstunReceiver = GetComponent<HitstunReceiver>();
 
         Health.OnDeath += Die;
 
@@ -114,6 +119,7 @@ public class Player : Entity
         WallJumpState = new PlayerWallJumpState(this, StateMachine);
         DashState = new PlayerDashState(this, StateMachine);
         WallSlideState = new PlayerWallSlideState(this, StateMachine);
+        StunState = new PlayerStunState(this, StateMachine);
     }
     private void Start()
     {

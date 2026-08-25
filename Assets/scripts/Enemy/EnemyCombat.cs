@@ -54,7 +54,7 @@ public class EnemyCombat : MonoBehaviour
             return;
         float deltaX = target.transform.position.x - transform.position.x;
         currentHorizontalAttackDirection = deltaX > 0 ? 1 : -1;
-        
+
         UpdateCombatPivot(currentHorizontalAttackDirection);
         attackExecutor.TryStartAttack(horizontalAttack);
     }
@@ -72,8 +72,8 @@ public class EnemyCombat : MonoBehaviour
         else if (target != null)
         {
             float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
-            if (distance <= allowAttackDistance) 
-            { 
+            if (distance <= allowAttackDistance)
+            {
                 TryAttack();
             }
         }
@@ -88,7 +88,7 @@ public class EnemyCombat : MonoBehaviour
     }
     private void HandleTargetHit(Entity target)
     {
-        attackEffectProcessor.ApplyAttackEffectToTarget(owner, target, horizontalAttack, currentHorizontalAttackDirection);
-        CombatFeedbackController.Instance.OnHit(owner, target);
+        if (attackEffectProcessor.ApplyAttackEffectToTarget(owner, target, horizontalAttack, currentHorizontalAttackDirection))
+            CombatFeedbackController.Instance.OnHit(owner, target);
     }
 }

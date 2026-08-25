@@ -370,6 +370,7 @@ GameObject:
   - component: {fileID: 570564408}
   - component: {fileID: 570564413}
   - component: {fileID: 570564407}
+  - component: {fileID: 570564416}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -595,13 +596,13 @@ MonoBehaviour:
     knockbackX: 12
     applyYKnockback: 1
     knockbackY: 7
-    knockbackXDuration: 0.1
-    knockbackYDuration: 0.03
+    knockbackXDuration: 0.2
+    knockbackYDuration: 0.025
     hitBox: {fileID: 762774784}
     windupTime: 0.3
     activeTime: 0.1
     recoveryTime: 0.3
-    hitstunDuration: 0
+    hitstunDuration: 0.3
   combatPivot: {fileID: 659673742}
   allowAttackDistance: 1.5
 --- !u!114 &570564413
@@ -643,6 +644,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 026ae383d12d4c54fbeb1407787f8acd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitstunReceiver
+--- !u!114 &570564416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570564401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0804e33fa7c0ebd40ad00e3ee4565d78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitReceiver
 --- !u!1 &659673741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1509,6 +1522,8 @@ GameObject:
   - component: {fileID: 1687913278}
   - component: {fileID: 1687913280}
   - component: {fileID: 1687913279}
+  - component: {fileID: 1687913282}
+  - component: {fileID: 1687913283}
   - component: {fileID: 1687913281}
   m_Layer: 8
   m_Name: Player
@@ -1788,6 +1803,30 @@ MonoBehaviour:
   spriteRenderer: {fileID: 415838955}
   hitColor: {r: 1, g: 0.6470588, b: 0, a: 1}
   flashDuration: 0.1
+--- !u!114 &1687913282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687913269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0804e33fa7c0ebd40ad00e3ee4565d78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitReceiver
+--- !u!114 &1687913283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687913269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 026ae383d12d4c54fbeb1407787f8acd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitstunReceiver
 --- !u!1 &1687933614
 GameObject:
   m_ObjectHideFlags: 0

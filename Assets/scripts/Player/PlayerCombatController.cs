@@ -22,7 +22,7 @@ public class PlayerCombatController : MonoBehaviour
     private ImpulseController impulseController;
     private float gravityScale;
     private AttackData currentAttack;
-    private int currentHorizontalAttackDirection;
+    private int currentAttackDirection;
     #endregion
     private void Awake()
     {
@@ -75,9 +75,9 @@ public class PlayerCombatController : MonoBehaviour
         else
         {
             currentAttack = horizontalAttack;
-            currentHorizontalAttackDirection = facingDirection;
         }
 
+        currentAttackDirection = facingDirection;
         UpdateCombatPivot(facingDirection);
         attackExecutor.TryStartAttack(currentAttack);
         return true;
@@ -94,14 +94,14 @@ public class PlayerCombatController : MonoBehaviour
     #region Hit Response
     private void HandleTargetHit(Entity target)
     {
-        if (attackEffectProcessor.ApplyAttackEffectToTarget(owner, target, currentAttack, currentHorizontalAttackDirection))
+        if (attackEffectProcessor.ApplyAttackEffectToTarget(owner, target, currentAttack, currentAttackDirection))
             ApplySelfResponse(target);
     }
     private void ApplySelfResponse(Entity target)
     {
         if (currentAttack == horizontalAttack)
         {
-            impulseController.ApplyHorizontalOverrideVelocity(-currentHorizontalAttackDirection * horizontalHitRecoilSpeed, recoilDuration);
+            impulseController.ApplyHorizontalOverrideVelocity(-currentAttackDirection * horizontalHitRecoilSpeed, recoilDuration);
         }
 
         if (currentAttack == downAttack)

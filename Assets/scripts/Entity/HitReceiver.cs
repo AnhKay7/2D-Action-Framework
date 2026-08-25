@@ -8,20 +8,20 @@ public class HitReceiver : MonoBehaviour
     {
         owner = GetComponentInParent<Entity>();
     }
-    public bool ReceiveHit(Entity attacker, AttackData attackData, int horizontalAttackDirection)
+    public bool ReceiveHit(Entity attacker, AttackData attackData, int attackDirection)
     {
         if (owner.CanReceiveHit)
         {
-            ApplyAttackEffect(attacker, attackData, horizontalAttackDirection);
+            ApplyAttackEffect(attacker, attackData, attackDirection);
             return true;
         }
         return false;
     }
-    private void ApplyAttackEffect(Entity attacker, AttackData attackData, int attackHorizontalDirection)
+    private void ApplyAttackEffect(Entity attacker, AttackData attackData, int attackDirection)
     {
         ApplyDamage(attackData);
-        ApplyKnockback(attackData, attackHorizontalDirection);
-        AppHitstun(attackData);
+        ApplyKnockback(attackData, attackDirection);
+        ApplyHitstun(attackData);
         ApplyHitReaction();
     }
     private void ApplyDamage(AttackData attackData)
@@ -30,11 +30,11 @@ public class HitReceiver : MonoBehaviour
 
         damageable?.TakeDamage(attackData.Damage);
     }
-    private void ApplyKnockback(AttackData attackData, int horizontalAttackDirection)
+    private void ApplyKnockback(AttackData attackData, int attackDirection)
     {
         IKnockbackable knockbackable = owner.GetComponentInChildren<IKnockbackable>();
 
-        float? finalXKnockback = (attackData.ApplyXKnockback == false ? null : attackData.KnockbackX * horizontalAttackDirection);
+        float? finalXKnockback = (attackData.ApplyXKnockback == false ? null : attackData.KnockbackX * attackDirection);
         float? finalYKnockback = (attackData.ApplyYKnockback == false ? null : attackData.KnockbackY);
 
         knockbackable?.ApplyKnockback(finalXKnockback, finalYKnockback, attackData.KnockbackXDuration, attackData.KnockbackYDuration);
@@ -45,7 +45,7 @@ public class HitReceiver : MonoBehaviour
 
         reaction?.ReactionToHit();
     }
-    private void AppHitstun(AttackData attackData)
+    private void ApplyHitstun(AttackData attackData)
     {
         IHitstunnable hitstunnable = owner.GetComponentInChildren<IHitstunnable>();
 
