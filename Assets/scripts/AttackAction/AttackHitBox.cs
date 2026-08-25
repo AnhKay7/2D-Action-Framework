@@ -7,7 +7,7 @@ public class AttackHitBox : MonoBehaviour
     private Entity owner;
     private Collider2D hitbox;
     private HashSet<Entity> Targets = new();
-    public event Action<Entity> HitConfirmed;
+    public event Action<Entity> TargetDetected;
     private void Awake()
     {
         hitbox = GetComponent<Collider2D>();
@@ -34,7 +34,7 @@ public class AttackHitBox : MonoBehaviour
             return;
 
         if (Targets.Add(target)){
-            HitConfirmed?.Invoke(target);
+            TargetDetected?.Invoke(target);
         }
     }
     private void OnDrawGizmos()

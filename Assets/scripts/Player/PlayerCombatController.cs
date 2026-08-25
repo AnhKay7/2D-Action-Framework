@@ -30,9 +30,9 @@ public class PlayerCombatController : MonoBehaviour
         attackEffectProcessor = new AttackEffectProcessor();
         attackExecutor = new AttackExecutor();
 
-        horizontalAttack.HitBox.HitConfirmed += HandleTargetHit;
-        downAttack.HitBox.HitConfirmed += HandleTargetHit;
-        upAttack.HitBox.HitConfirmed += HandleTargetHit;
+        horizontalAttack.HitBox.TargetDetected += HandleTargetHit;
+        downAttack.HitBox.TargetDetected += HandleTargetHit;
+        upAttack.HitBox.TargetDetected += HandleTargetHit;
     }
     public void Initialize(float GravityScale, ImpulseController impulseController)
     {

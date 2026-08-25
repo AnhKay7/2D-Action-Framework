@@ -34,7 +34,7 @@ public class EnemyCombat : MonoBehaviour
         attackExecutor = new AttackExecutor();
         attackEffectProcessor = new AttackEffectProcessor();
 
-        horizontalAttack.HitBox.HitConfirmed += HandleTargetHit;
+        horizontalAttack.HitBox.TargetDetected += HandleTargetHit;
     }
     public void SetTarget(Entity target)
     {
