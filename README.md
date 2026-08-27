@@ -99,3 +99,31 @@ After that, `AttackEffectProcessor` requests the target's `HitReceiver` to recei
 If the hit is accepted, the attacker can then apply its own response, such as recoil or pogo.
 
 Because of this, the attacker does not need to directly change or know the internal state of the target. If the target has a special condition that prevents it from receiving a hit, it can simply reject the hit.
+
+## Design Philosophy
+
+This project is mainly a learning project.
+
+I do not want to build every possible system before the game actually needs it. Instead, I try to solve the current problem first, test the result, and only redesign the system when a real limitation appears.
+
+The framework is meant to grow together with the game built on top of it.
+
+## What I Learned
+
+How to code in Unity/C#.
+
+How to separate responsibilities between different gameplay systems.
+
+How important it is to make a system reusable.
+
+What information a system should expose, and which systems need to know about each other to work together.
+
+There are many solutions to a problem, but choosing the one that fits my style and my system is more important.
+
+There is no easy way around a problem by avoiding it.
+
+## Next Steps
+
+The framework phase is now intentionally paused.
+
+The next goal is to use the current systems to build a real playable game.
