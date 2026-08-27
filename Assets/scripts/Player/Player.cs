@@ -164,9 +164,12 @@ public class Player : Entity
     {
         if (Input.AttackInput)
         {
+            int facingDirection = Input.IsFacingRight ? 1 : -1;
+            if (Wall.IsTouchingWall)
+                facingDirection = (int) -Wall.WallDirection;
             if (CombatController.TryAttack(
                     StateMachine.CurrentState.CanAttack,
-                    Input.IsFacingRight ? 1 : -1,
+                    facingDirection,
                     Input.AttackVerticalDirection,
                     Ground.IsGrounded))
                 Input.UseAttackInput();
