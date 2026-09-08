@@ -25,13 +25,23 @@ public class PlayerAnimationController : MonoBehaviour
             desiredAnimation = "PlayerJump";
         if (player.StateMachine.CurrentState == player.DashState)
             desiredAnimation = "PlayerDash";
-
+        if (player.StateMachine.CurrentState == player.WallSlideState)
+            desiredAnimation = "PlayerFall";
+        if (player.StateMachine.CurrentState == player.WallJumpState)
+            desiredAnimation = "PlayerJump";
+        if (player.StateMachine.CurrentState == player.StunState)
+            desiredAnimation = "PlayerHurt";
         if (desiredAnimation != currentAnimation)
         {
             animator.Play(desiredAnimation);
             currentAnimation = desiredAnimation;
         }
 
-        spriteRenderer.flipX = !player.Input.IsFacingRight;
+        bool playerFacingDirection = player.Input.IsFacingRight;
+
+        if (player.StateMachine.CurrentState == player.WallSlideState)
+            playerFacingDirection = !playerFacingDirection;
+
+        spriteRenderer.flipX = !playerFacingDirection;
     }
 }
