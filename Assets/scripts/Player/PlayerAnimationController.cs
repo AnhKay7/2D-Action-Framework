@@ -25,10 +25,13 @@ public class PlayerAnimationController : MonoBehaviour
         attackSwingAnimationEndTime = Time.time + attackData.WindupTime + attackData.ActiveTime;
         attackAnimationEndTime = attackSwingAnimationEndTime + attackData.RecoveryTime;
         isAttackDirectionFacingRight = (facingDirection == 1 ? true : false);
-        requestOverrideAnimation = "PlayerAttack";
+        if (attackVerticalDirection == 1)
+            requestOverrideAnimation = "PlayerUpAttack";
+        else if (attackVerticalDirection == -1 && !player.Ground.IsGrounded)
+            requestOverrideAnimation = "PlayerDownAttack";
+        else
+            requestOverrideAnimation = "PlayerAttack";
         isPlayingAttackAnimation = true;
-        //if (attackVerticalDirection == -1)
-        //    currentAnimation = ""
     }
     private void ResolveAnimation()
     {
@@ -38,7 +41,7 @@ public class PlayerAnimationController : MonoBehaviour
             currentAnimation = requestOverrideAnimation;
         else
         {
-            if (currentAnimation == "PlayerAttack")
+            if (currentAnimation == "PlayerAttack" || currentAnimation == "PlayerUpAttack" || currentAnimation == "PlayerDownAttack")
             {
                 if (Time.time >= attackSwingAnimationEndTime)
                 {
@@ -49,7 +52,7 @@ public class PlayerAnimationController : MonoBehaviour
             else currentAnimation = requestBaseAnimation;
         }
 
-        if (currentAnimation != "PlayerAttack")
+        if (currentAnimation != "PlayerAttack" && currentAnimation != "PlayerUpAttack" && currentAnimation != "PlayerDownAttack")
             isPlayingAttackAnimation = false;
     }
     private void ResetRequest()
