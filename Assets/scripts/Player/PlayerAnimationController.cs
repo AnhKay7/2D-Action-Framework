@@ -14,6 +14,7 @@ public class PlayerAnimationController : MonoBehaviour
     private PlayerAnimation? requestDominantAnimation = null;
     private PlayerAnimation? terminalAnimation = null;
     private bool isAttackDirectionFacingRight = true;
+    private bool isHurtDirectionFacingRight = true;
     public event Action DeathAnimationFinish;
     private enum PlayerAnimation{
 
@@ -100,6 +101,10 @@ public class PlayerAnimationController : MonoBehaviour
     {
         terminalAnimation = PlayerAnimation.Death;
     }
+    public void RequestHurtAnimation(int facingDirection)
+    {
+        isHurtDirectionFacingRight = (facingDirection >= 0);
+    }
     private PlayerAnimation ResolveAnimation(PlayerAnimation currentAnimaiton)
     {
         PlayerAnimation baseAnimation = requestBaseAnimation ?? PlayerAnimation.Idle;
@@ -130,7 +135,10 @@ public class PlayerAnimationController : MonoBehaviour
     private void ChangeAnimation(PlayerAnimation nextAnimation)
     {
         if (currentAnimation == nextAnimation)
-            return;
+        {
+            if (!IsAttackAnimation(currentAnimation))
+                return;
+        }
 
         currentAnimation = nextAnimation;
         animator.Play(GetAnimationHash(currentAnimation));
@@ -183,7 +191,8 @@ public class PlayerAnimationController : MonoBehaviour
             playerFacingDirection = !playerFacingDirection;
         if (IsAttackAnimation(currentAnimation))
             playerFacingDirection = isAttackDirectionFacingRight;
-
+        if (currentAnimation == PlayerAnimation.Hurt)
+            playerFacingDirection = isHurtDirectionFacingRight;
         spriteRenderer.flipX = !playerFacingDirection;
         ResetRequest();
     }

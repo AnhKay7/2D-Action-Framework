@@ -113,6 +113,7 @@ public class Player : Entity
 
         Health.OnDeath += Die;
         playerAnimationController.DeathAnimationFinish += DestroyOnDeath;
+        HitReceiver.HitReceived += HandleHitRecived;
 
         StateMachine = new PlayerStateMachine();
 
@@ -192,6 +193,18 @@ public class Player : Entity
     private void DestroyOnDeath()
     {
         Destroy(gameObject);
+    }
+    private void HandleHitRecived(Entity attacker, int attackDirection)
+    {
+        float deltaX = (attacker.transform.position.x - this.transform.position.x);
+
+        int hurtFacingDirection = (deltaX >= 0 ? 1 : -1);
+        if (deltaX == 0)
+        {
+            hurtFacingDirection = attackDirection;
+        }
+
+        playerAnimationController.RequestHurtAnimation(hurtFacingDirection);
     }
     #endregion
 }
