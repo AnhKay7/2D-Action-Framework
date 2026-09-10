@@ -719,7 +719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
   horizontalAttack:
-    damage: 0
+    damage: 20
     applyXKnockback: 1
     knockbackX: 12
     applyYKnockback: 1
@@ -1861,7 +1861,7 @@ MonoBehaviour:
     knockbackYDuration: 0
     hitBox: {fileID: 1764899375}
     windupTime: 0.2
-    activeTime: 0.2
+    activeTime: 0.15
     recoveryTime: 0.1
     hitstunDuration: 0.2
   upAttack:
@@ -1874,7 +1874,7 @@ MonoBehaviour:
     knockbackYDuration: 0.04
     hitBox: {fileID: 1040759778}
     windupTime: 0.2
-    activeTime: 0.2
+    activeTime: 0.15
     recoveryTime: 0.1
     hitstunDuration: 0.2
   downAttack:
@@ -1887,7 +1887,7 @@ MonoBehaviour:
     knockbackYDuration: 0
     hitBox: {fileID: 1580531174}
     windupTime: 0.2
-    activeTime: 0.2
+    activeTime: 0.15
     recoveryTime: 0.1
     hitstunDuration: 0.2
   horizontalHitRecoilSpeed: 12
