@@ -7,9 +7,11 @@ public class PlayerWallJumpState : PlayerJumpState
     }
 
     private bool jumpForceApplied;
+    public override bool CanTurn => Time.time >= wallJumpInputUnlockTime;
     public override void EnterState()
     {
         base.EnterState();
+        player.SetFacingDirection(-player.Wall.WallDirection);
         jumpForceApplied = false;
         wallJumpInputUnlockTime = Time.time + player.WallJumpDuration;
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 public class WallSensor : MonoBehaviour
 {
     public bool IsTouchingWall { get; private set; } = false;
-    public float WallDirection { get; private set; } = 0f;
+    public int WallDirection { get; private set; } = 0;
 
     [Header("Collision Layer")]
     [SerializeField] private LayerMask groundLayer;
@@ -28,12 +28,12 @@ public class WallSensor : MonoBehaviour
         if (hitRight.collider != null)
         {
             IsTouchingWall = true;
-            WallDirection = 1f;
+            WallDirection = 1;
         }
         else if (hitLeft.collider != null)
         {
             IsTouchingWall = true;
-            WallDirection = -1f;
+            WallDirection = -1;
         }
         else
         {

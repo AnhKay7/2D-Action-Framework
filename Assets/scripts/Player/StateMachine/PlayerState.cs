@@ -8,6 +8,7 @@ public abstract class PlayerState
     public virtual bool CanAttack => true;
     public virtual bool CanReceiveHit => true;
     public virtual bool CanBeHitstunned => true;
+    public virtual bool CanTurn => true;
     public PlayerState(Player _player, PlayerStateMachine _stateMachine)
     {
         this.player = _player;

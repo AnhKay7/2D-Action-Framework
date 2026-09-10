@@ -185,7 +185,7 @@ public class PlayerAnimationController : MonoBehaviour
         PlayerAnimation nextAnimation = ResolveAnimation(currentAnimation);
         ChangeAnimation(nextAnimation);
 
-        bool playerFacingDirection = player.Input.IsFacingRight;
+        bool playerFacingDirection = player.IsFacingRight;
 
         if (player.StateMachine.CurrentState == player.WallSlideState)
             playerFacingDirection = !playerFacingDirection;

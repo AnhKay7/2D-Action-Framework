@@ -828,7 +828,7 @@ GameObject:
   - component: {fileID: 762774783}
   - component: {fileID: 762774782}
   - component: {fileID: 762774784}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: HorizontalHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1653,7 +1653,6 @@ GameObject:
   - component: {fileID: 1687913282}
   - component: {fileID: 1687913283}
   - component: {fileID: 1687913281}
-  - component: {fileID: 1687913284}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -1852,7 +1851,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatController
   combatPivot: {fileID: 1855257715}
   horizontalAttack:
-    damage: 10
+    damage: 20
     applyXKnockback: 1
     knockbackX: 24
     applyYKnockback: 0
@@ -1860,12 +1859,12 @@ MonoBehaviour:
     knockbackXDuration: 0.08
     knockbackYDuration: 0
     hitBox: {fileID: 1764899375}
-    windupTime: 0.2
+    windupTime: 0.15
     activeTime: 0.15
-    recoveryTime: 0.1
+    recoveryTime: 0.2
     hitstunDuration: 0.2
   upAttack:
-    damage: 10
+    damage: 20
     applyXKnockback: 0
     knockbackX: 0
     applyYKnockback: 1
@@ -1873,12 +1872,12 @@ MonoBehaviour:
     knockbackXDuration: 0
     knockbackYDuration: 0.04
     hitBox: {fileID: 1040759778}
-    windupTime: 0.2
+    windupTime: 0.15
     activeTime: 0.15
-    recoveryTime: 0.1
+    recoveryTime: 0.2
     hitstunDuration: 0.2
   downAttack:
-    damage: 10
+    damage: 20
     applyXKnockback: 0
     knockbackX: 0
     applyYKnockback: 0
@@ -1886,12 +1885,12 @@ MonoBehaviour:
     knockbackXDuration: 0
     knockbackYDuration: 0
     hitBox: {fileID: 1580531174}
-    windupTime: 0.2
+    windupTime: 0.15
     activeTime: 0.15
-    recoveryTime: 0.1
+    recoveryTime: 0.2
     hitstunDuration: 0.2
   horizontalHitRecoilSpeed: 12
-  recoilDuration: 0.08
+  recoilDuration: 0.1
   pogoLauchedHeigth: 2.5
 --- !u!114 &1687913279
 MonoBehaviour:
@@ -1957,28 +1956,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 026ae383d12d4c54fbeb1407787f8acd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitstunReceiver
---- !u!95 &1687913284
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1687913269}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 62214ab0e08185e4b84008aea768dcb3, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1687933614
 GameObject:
   m_ObjectHideFlags: 0

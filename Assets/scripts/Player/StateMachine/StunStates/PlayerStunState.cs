@@ -7,7 +7,8 @@ public class PlayerStunState : PlayerState
     }
     public override bool CanAttack => false;
     public override bool CanBeHitstunned => false;
-    //public override bool CanReceiveHit => true;
+    public override bool CanTurn => false;
+    public override bool CanReceiveHit => false;
     public override bool FrameUpdate()
     {
         if (base.FrameUpdate())

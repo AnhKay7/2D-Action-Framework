@@ -4,6 +4,7 @@ public class PlayerDashState : PlayerAbilityState
 {
     protected override bool AllowDash => false;
     public override bool CanAttack => false;
+    public override bool CanTurn => false;
     private float dashDirection;
     public PlayerDashState(Player _player, PlayerStateMachine _stateMachine) : base(_player, _stateMachine)
     {
@@ -24,7 +25,7 @@ public class PlayerDashState : PlayerAbilityState
         }
         else
         {
-            dashDirection = player.Input.IsFacingRight ? 1f : -1f;
+            dashDirection = player.IsFacingRight ? 1f : -1f;
         }
 
         player.DashController.ConsumeDash(player.Ground.IsGrounded);
