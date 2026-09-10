@@ -1,23 +1,87 @@
+using System;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
     private Player player;
     private Animator animator;
-    private string currentAnimation = "PlayerIdle";
+    private PlayerAnimation currentAnimation = PlayerAnimation.Idle;
     private SpriteRenderer spriteRenderer;
     private float attackSwingAnimationEndTime = -100f;
     private float attackAnimationEndTime = -100f;
-    private string requestBaseAnimation = null;
-    private string requestOverrideAnimation = null;
-    private string requestDominantAnimation = null;
+    private PlayerAnimation? requestBaseAnimation = null;
+    private PlayerAnimation? requestOverrideAnimation = null;
+    private PlayerAnimation? requestDominantAnimation = null;
+    private PlayerAnimation? terminalAnimation = null;
     private bool isAttackDirectionFacingRight = true;
-    private bool isPlayingAttackAnimation = false;
+    public event Action DeathAnimationFinish;
+    private enum PlayerAnimation{
+
+        Idle,
+        Run,
+        Jump,
+        Fall,
+
+        Attack,
+        UpAttack,
+        DownAttack,
+
+        Dash,
+        Hurt,
+        Death
+    }
+    private static class AnimationHash
+    {
+        public static readonly int Idle = Animator.StringToHash("PlayerIdle");
+        public static readonly int Run = Animator.StringToHash("PlayerRun");
+        public static readonly int Fall = Animator.StringToHash("PlayerFall");
+        public static readonly int Jump = Animator.StringToHash("PlayerJump");
+        public static readonly int Attack = Animator.StringToHash("PlayerAttack");
+        public static readonly int UpAttack = Animator.StringToHash("PlayerUpAttack");
+        public static readonly int DownAttack = Animator.StringToHash("PlayerDownAttack");
+        public static readonly int Dash = Animator.StringToHash("PlayerDash");
+        public static readonly int Hurt = Animator.StringToHash("PlayerHurt");
+        public static readonly int Death = Animator.StringToHash("PlayerDeath");
+    }
+    private int GetAnimationHash(PlayerAnimation animation)
+    {
+        return animation switch
+        {
+            PlayerAnimation.Idle => AnimationHash.Idle,
+            PlayerAnimation.Run => AnimationHash.Run,
+            PlayerAnimation.Fall => AnimationHash.Fall,
+            PlayerAnimation.Jump => AnimationHash.Jump,
+            PlayerAnimation.Attack => AnimationHash.Attack,
+            PlayerAnimation.UpAttack => AnimationHash.UpAttack,
+            PlayerAnimation.DownAttack => AnimationHash.DownAttack,
+            PlayerAnimation.Dash => AnimationHash.Dash,
+            PlayerAnimation.Hurt => AnimationHash.Hurt,
+            PlayerAnimation.Death => AnimationHash.Death,
+            _ => AnimationHash.Idle
+        };
+    }
     private void Awake()
     {
         player = GetComponentInParent<Player>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+    private bool IsAttackAnimation(PlayerAnimation targetAnimation)
+    {
+        return targetAnimation is
+            PlayerAnimation.Attack
+            or PlayerAnimation.UpAttack
+            or PlayerAnimation.DownAttack;
+    }
+    private bool IsTerminalAnimationFinished()
+    {
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+
+        int expectedHash = GetAnimationHash(terminalAnimation.Value);
+
+        return !animator.IsInTransition(0)
+            && state.shortNameHash == expectedHash
+            && state.normalizedTime >= 1f;
     }
     public void RequestAttackAnimation(AttackData attackData, int attackVerticalDirection, int facingDirection)
     {
@@ -26,34 +90,36 @@ public class PlayerAnimationController : MonoBehaviour
         attackAnimationEndTime = attackSwingAnimationEndTime + attackData.RecoveryTime;
         isAttackDirectionFacingRight = (facingDirection == 1 ? true : false);
         if (attackVerticalDirection == 1)
-            requestOverrideAnimation = "PlayerUpAttack";
+            requestOverrideAnimation = PlayerAnimation.UpAttack;
         else if (attackVerticalDirection == -1 && !player.Ground.IsGrounded)
-            requestOverrideAnimation = "PlayerDownAttack";
+            requestOverrideAnimation = PlayerAnimation.DownAttack;
         else
-            requestOverrideAnimation = "PlayerAttack";
-        isPlayingAttackAnimation = true;
+            requestOverrideAnimation = PlayerAnimation.Attack;
     }
-    private void ResolveAnimation()
+    public void RequestDeathAnimation()
     {
+        terminalAnimation = PlayerAnimation.Death;
+    }
+    private PlayerAnimation ResolveAnimation(PlayerAnimation currentAnimaiton)
+    {
+        PlayerAnimation baseAnimation = requestBaseAnimation ?? PlayerAnimation.Idle;
         if (requestDominantAnimation != null)
-            currentAnimation = requestDominantAnimation;
+            currentAnimaiton = requestDominantAnimation.Value;
         else if (requestOverrideAnimation != null)
-            currentAnimation = requestOverrideAnimation;
+            currentAnimaiton = requestOverrideAnimation.Value;
         else
         {
-            if (currentAnimation == "PlayerAttack" || currentAnimation == "PlayerUpAttack" || currentAnimation == "PlayerDownAttack")
+            if (IsAttackAnimation(currentAnimaiton))
             {
                 if (Time.time >= attackSwingAnimationEndTime)
                 {
-                    if (Time.time >= attackAnimationEndTime || requestBaseAnimation != "PlayerIdle")
-                        currentAnimation = requestBaseAnimation;
+                    if (Time.time >= attackAnimationEndTime || baseAnimation != PlayerAnimation.Idle)
+                        currentAnimaiton = baseAnimation;
                 }
             }
-            else currentAnimation = requestBaseAnimation;
+            else currentAnimaiton = baseAnimation;
         }
-
-        if (currentAnimation != "PlayerAttack" && currentAnimation != "PlayerUpAttack" && currentAnimation != "PlayerDownAttack")
-            isPlayingAttackAnimation = false;
+        return currentAnimaiton;
     }
     private void ResetRequest()
     {
@@ -61,35 +127,61 @@ public class PlayerAnimationController : MonoBehaviour
         requestOverrideAnimation = null;
         requestDominantAnimation = null;
     }
+    private void ChangeAnimation(PlayerAnimation nextAnimation)
+    {
+        if (currentAnimation == nextAnimation)
+            return;
+
+        currentAnimation = nextAnimation;
+        animator.Play(GetAnimationHash(currentAnimation));
+    }
     private void LateUpdate()
     {
+        if (terminalAnimation != null)
+        {
+            ChangeAnimation(terminalAnimation.Value);
+
+            if (IsTerminalAnimationFinished())
+            {
+                if (terminalAnimation == PlayerAnimation.Death)
+                {
+                    terminalAnimation = null;
+                    DeathAnimationFinish?.Invoke();
+                    return;
+                }
+                terminalAnimation = null;
+            }
+            else
+                return;
+        }
+        
         if (player.StateMachine.CurrentState == player.IdleState)
-            requestBaseAnimation = "PlayerIdle";
+            requestBaseAnimation = PlayerAnimation.Idle;
         if (player.StateMachine.CurrentState == player.MoveState)
-            requestBaseAnimation = "PlayerRun";
+            requestBaseAnimation = PlayerAnimation.Run;
 
         if (player.StateMachine.CurrentState == player.FallState)
-            requestBaseAnimation = "PlayerFall";
+            requestBaseAnimation = PlayerAnimation.Fall;
         if (player.StateMachine.CurrentState == player.JumpState)
-            requestBaseAnimation = "PlayerJump";
+            requestBaseAnimation = PlayerAnimation.Jump;
         if (player.StateMachine.CurrentState == player.WallSlideState)
-            requestBaseAnimation = "PlayerFall";
+            requestBaseAnimation = PlayerAnimation.Fall;
         if (player.StateMachine.CurrentState == player.WallJumpState)
-            requestBaseAnimation = "PlayerJump";
+            requestBaseAnimation = PlayerAnimation.Jump;
 
         if (player.StateMachine.CurrentState == player.DashState)
-            requestDominantAnimation = "PlayerDash";
+            requestDominantAnimation = PlayerAnimation.Dash;
         if (player.StateMachine.CurrentState == player.StunState)
-            requestDominantAnimation = "PlayerHurt";
+            requestDominantAnimation = PlayerAnimation.Hurt;
 
-        ResolveAnimation();
-        animator.Play(currentAnimation);
+        PlayerAnimation nextAnimation = ResolveAnimation(currentAnimation);
+        ChangeAnimation(nextAnimation);
 
         bool playerFacingDirection = player.Input.IsFacingRight;
 
         if (player.StateMachine.CurrentState == player.WallSlideState)
             playerFacingDirection = !playerFacingDirection;
-        if (isPlayingAttackAnimation)
+        if (IsAttackAnimation(currentAnimation))
             playerFacingDirection = isAttackDirectionFacingRight;
 
         spriteRenderer.flipX = !playerFacingDirection;

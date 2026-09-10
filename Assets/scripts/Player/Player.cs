@@ -70,6 +70,7 @@ public class Player : Entity
     public Health Health { get; private set; }
     public HitReceiver HitReceiver { get; private set; }
     public HitstunReceiver HitstunReceiver { get; private set; }
+    public PlayerAnimationController playerAnimationController { get; private set; }
     #endregion
 
     #region Runtime Systems
@@ -108,10 +109,13 @@ public class Player : Entity
         Health = GetComponent<Health>();
         HitReceiver = GetComponent<HitReceiver>();
         HitstunReceiver = GetComponent<HitstunReceiver>();
+        playerAnimationController = GetComponentInChildren<PlayerAnimationController>();
 
         Health.OnDeath += Die;
+        playerAnimationController.DeathAnimationFinish += DestroyOnDeath;
 
         StateMachine = new PlayerStateMachine();
+
         IdleState = new PlayerIdleState(this, StateMachine);
         MoveState = new PlayerMoveState(this, StateMachine);
         JumpState = new PlayerJumpState(this, StateMachine);
@@ -131,7 +135,7 @@ public class Player : Entity
     {
         Input.GetPlayerInput();
         StateMachine.CurrentState.FrameUpdate();
-        CombatController.FrameUpdate(StateMachine.CurrentState.CanAttack);
+        CombatController.FrameUpdate(StateMachine.CurrentState.CanAttack && IsAlive);
         HandleActionRequests();
     }
     private void FixedUpdate()
@@ -179,9 +183,14 @@ public class Player : Entity
     #region Entity
     //protected override Faction EntityFration => Faction.Player;
     public override bool CanReceiveHit => StateMachine?.CurrentState?.CanReceiveHit ?? false;
+    public override bool IsAlive => Health != null ? !Health.IsDead : base.IsAlive;
     private void Die()
     {
-        Debug.Log("YOU DIE!");
+        Input.DisableInput();
+        playerAnimationController.RequestDeathAnimation();
+    }
+    private void DestroyOnDeath()
+    {
         Destroy(gameObject);
     }
     #endregion
