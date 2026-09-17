@@ -23,10 +23,12 @@ public class PlayerCombatController : MonoBehaviour
     private float gravityScale;
     private AttackData currentAttack;
     private int currentAttackDirection;
+    private PlayerAnimationController playerAnimationController;
     #endregion
     private void Awake()
     {
         owner = GetComponentInParent<Entity>();
+        playerAnimationController = GetComponentInChildren<PlayerAnimationController>();
         attackEffectProcessor = new AttackEffectProcessor();
         attackExecutor = new AttackExecutor();
 
@@ -77,6 +79,7 @@ public class PlayerCombatController : MonoBehaviour
             currentAttack = horizontalAttack;
         }
 
+        playerAnimationController.RequestAttackAnimation(currentAttack, attackVerticalDirection, facingDirection);
         currentAttackDirection = facingDirection;
         UpdateCombatPivot(facingDirection);
         attackExecutor.TryStartAttack(currentAttack);

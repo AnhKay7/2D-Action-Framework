@@ -49,7 +49,7 @@ public class Player : Entity
     [SerializeField] private float wallCoyoteTime = 0.08f;
     public float WallCoyoteTime => wallCoyoteTime;
 
-    [SerializeField] private float wallJumpForce = 17f;
+    [SerializeField] private float wallJumpForce = 20f;
     public float WallJumpForce => wallJumpForce;
 
     [SerializeField] private float wallJumpDuration = 0.15f;
@@ -70,11 +70,14 @@ public class Player : Entity
     public Health Health { get; private set; }
     public HitReceiver HitReceiver { get; private set; }
     public HitstunReceiver HitstunReceiver { get; private set; }
+    public PlayerAnimationController playerAnimationController { get; private set; }
     #endregion
 
     #region Runtime Systems
     public ImpulseController ImpulseController { get; private set; } = new ImpulseController();
     public VelocityResolver VelocityResolver { get; private set; } = new VelocityResolver();
+    public int FacingDirection { get; private set; } = 1;
+    public bool IsFacingRight => FacingDirection > 0;
     #endregion
 
     #region StateMachine
@@ -108,10 +111,14 @@ public class Player : Entity
         Health = GetComponent<Health>();
         HitReceiver = GetComponent<HitReceiver>();
         HitstunReceiver = GetComponent<HitstunReceiver>();
+        playerAnimationController = GetComponentInChildren<PlayerAnimationController>();
 
         Health.OnDeath += Die;
+        playerAnimationController.DeathAnimationFinish += DestroyOnDeath;
+        HitReceiver.HitReceived += HandleHitRecived;
 
         StateMachine = new PlayerStateMachine();
+
         IdleState = new PlayerIdleState(this, StateMachine);
         MoveState = new PlayerMoveState(this, StateMachine);
         JumpState = new PlayerJumpState(this, StateMachine);
@@ -131,7 +138,8 @@ public class Player : Entity
     {
         Input.GetPlayerInput();
         StateMachine.CurrentState.FrameUpdate();
-        CombatController.FrameUpdate(StateMachine.CurrentState.CanAttack);
+        UpdateFacingDirection();
+        CombatController.FrameUpdate(StateMachine.CurrentState.CanAttack && IsAlive);
         HandleActionRequests();
     }
     private void FixedUpdate()
@@ -155,34 +163,64 @@ public class Player : Entity
     }
     public void ConsumeAllJumpGraces() //coyote, wall coyote
     {
-
         ConsumeGroundedTime();
         ConsumeOnWallTime();
         Input.UseJumpInput();
+    }
+    public void SetFacingDirection(int direction)
+    {
+        if (direction == 0)
+            return;
+
+        FacingDirection = direction;
     }
     private void HandleActionRequests()
     {
         if (Input.AttackInput)
         {
-            int facingDirection = Input.IsFacingRight ? 1 : -1;
-            if (Wall.IsTouchingWall)
-                facingDirection = (int) -Wall.WallDirection;
             if (CombatController.TryAttack(
                     StateMachine.CurrentState.CanAttack,
-                    facingDirection,
+                    FacingDirection,
                     Input.AttackVerticalDirection,
                     Ground.IsGrounded))
                 Input.UseAttackInput();
+        }
+    }
+    private void UpdateFacingDirection()
+    {
+        if (StateMachine.CurrentState.CanTurn)
+        {
+            if (Input.MoveDirection == 0)
+                return;
+            FacingDirection = Input.MoveDirection > 0 ? 1 : -1;
         }
     }
 
     #region Entity
     //protected override Faction EntityFration => Faction.Player;
     public override bool CanReceiveHit => StateMachine?.CurrentState?.CanReceiveHit ?? false;
+    public override bool IsAlive => Health != null ? !Health.IsDead : base.IsAlive;
     private void Die()
     {
-        Debug.Log("YOU DIE!");
+        Input.DisableInput();
+        playerAnimationController.RequestDeathAnimation();
+    }
+    private void DestroyOnDeath()
+    {
         Destroy(gameObject);
+    }
+    private void HandleHitRecived(Entity attacker, int attackDirection)
+    {
+        float deltaX = (attacker.transform.position.x - this.transform.position.x);
+
+        int hurtFacingDirection = (deltaX >= 0 ? 1 : -1);
+        if (deltaX == 0)
+        {
+            hurtFacingDirection = attackDirection;
+        }
+
+        SetFacingDirection(hurtFacingDirection);
+        playerAnimationController.RequestHurtAnimation(hurtFacingDirection);
     }
     #endregion
 }

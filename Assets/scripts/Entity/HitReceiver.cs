@@ -4,6 +4,7 @@ using UnityEngine;
 public class HitReceiver : MonoBehaviour
 {
     private Entity owner;
+    public event Action<Entity, int> HitReceived;
     private void Awake()
     {
         owner = GetComponentInParent<Entity>();
@@ -13,6 +14,7 @@ public class HitReceiver : MonoBehaviour
         if (owner.CanReceiveHit)
         {
             ApplyAttackEffect(attacker, attackData, attackDirection);
+            HitReceived?.Invoke(attacker, attackDirection);
             return true;
         }
         return false;

@@ -5,7 +5,6 @@ public class PlayerInput : MonoBehaviour
     public bool JumpHeld { get; private set; }
     public bool JumpReleased { get; private set; }
     public float MoveDirection { get; private set; }
-    public bool IsFacingRight { get; private set; } = true;
     public int AttackVerticalDirection { get; private set; } = 0;
 
     [Header("Input Buffer Settings")]
@@ -16,12 +15,27 @@ public class PlayerInput : MonoBehaviour
     private float lastTimePressedJump = -100f;
     private float lastTimePressedDash = -100f;
     private float lastTimePressedAttack = -100f;
-
+    private bool inputEnable = true;
     public bool JumpInput => Time.time < lastTimePressedJump + jumpBufferTime;
     public bool DashInput => Time.time < lastTimePressedDash + dashBufferTime;
     public bool AttackInput => Time.time < lastTimePressedAttack + attackBufferTime;
+    public void DisableInput()
+    {
+        inputEnable = false;
+
+        JumpHeld = false;
+        JumpReleased = false;
+        MoveDirection = 0f;
+        AttackVerticalDirection = 0;
+
+        lastTimePressedJump = -100f;
+        lastTimePressedDash = -100f;
+        lastTimePressedAttack = -100f;
+    }
     public void GetPlayerInput()
     {
+        if (inputEnable == false)
+            return;
 
         if (Input.GetKeyDown(KeyCode.Z))
             lastTimePressedJump = Time.time;
@@ -38,10 +52,6 @@ public class PlayerInput : MonoBehaviour
         }
 
         MoveDirection = GetPlayerMoveDirection();
-        if (MoveDirection != 0f)
-        {
-            IsFacingRight = MoveDirection > 0f;
-        }
     }
     private float GetPlayerMoveDirection()
     {

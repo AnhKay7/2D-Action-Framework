@@ -13,4 +13,5 @@ public class Entity : MonoBehaviour
 
     public Faction EntityFaction => faction;
     public virtual bool CanReceiveHit => true;
+    public virtual bool IsAlive => true;
 }
