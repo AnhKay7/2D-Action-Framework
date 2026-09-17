@@ -13,10 +13,12 @@ public class PlayerAnimationController : MonoBehaviour
     private PlayerAnimation? requestOverrideAnimation = null;
     private PlayerAnimation? requestDominantAnimation = null;
     private PlayerAnimation? terminalAnimation = null;
+    private bool requestOverrideRestart = false;
     private bool isAttackDirectionFacingRight = true;
     private bool isHurtDirectionFacingRight = true;
     public event Action DeathAnimationFinish;
-    private enum PlayerAnimation{
+    private enum PlayerAnimation
+    {
 
         Idle,
         Run,
@@ -90,6 +92,7 @@ public class PlayerAnimationController : MonoBehaviour
         attackSwingAnimationEndTime = Time.time + attackData.WindupTime + attackData.ActiveTime;
         attackAnimationEndTime = attackSwingAnimationEndTime + attackData.RecoveryTime;
         isAttackDirectionFacingRight = (facingDirection == 1 ? true : false);
+        requestOverrideRestart = true;
         if (attackVerticalDirection == 1)
             requestOverrideAnimation = PlayerAnimation.UpAttack;
         else if (attackVerticalDirection == -1 && !player.Ground.IsGrounded)
@@ -99,19 +102,24 @@ public class PlayerAnimationController : MonoBehaviour
     }
     public void RequestDeathAnimation()
     {
+        ResetRequest();
         terminalAnimation = PlayerAnimation.Death;
     }
     public void RequestHurtAnimation(int facingDirection)
     {
         isHurtDirectionFacingRight = (facingDirection >= 0);
     }
-    private PlayerAnimation ResolveAnimation(PlayerAnimation currentAnimaiton)
+    private PlayerAnimation ResolveAnimation(PlayerAnimation currentAnimaiton, out bool restart)
     {
+        restart = false;
         PlayerAnimation baseAnimation = requestBaseAnimation ?? PlayerAnimation.Idle;
         if (requestDominantAnimation != null)
             currentAnimaiton = requestDominantAnimation.Value;
         else if (requestOverrideAnimation != null)
+        {
             currentAnimaiton = requestOverrideAnimation.Value;
+            restart = requestOverrideRestart;
+        }
         else
         {
             if (IsAttackAnimation(currentAnimaiton))
@@ -131,17 +139,17 @@ public class PlayerAnimationController : MonoBehaviour
         requestBaseAnimation = null;
         requestOverrideAnimation = null;
         requestDominantAnimation = null;
+        requestOverrideRestart = false;
     }
-    private void ChangeAnimation(PlayerAnimation nextAnimation)
+    private void ChangeAnimation(PlayerAnimation nextAnimation, bool restart = false)
     {
-        if (currentAnimation == nextAnimation)
+        if (currentAnimation == nextAnimation && !restart)
         {
-            if (!IsAttackAnimation(currentAnimation))
-                return;
+            return;
         }
 
         currentAnimation = nextAnimation;
-        animator.Play(GetAnimationHash(currentAnimation));
+        animator.Play(GetAnimationHash(currentAnimation), 0, 0f);
     }
     private void LateUpdate()
     {
@@ -162,7 +170,7 @@ public class PlayerAnimationController : MonoBehaviour
             else
                 return;
         }
-        
+
         if (player.StateMachine.CurrentState == player.IdleState)
             requestBaseAnimation = PlayerAnimation.Idle;
         if (player.StateMachine.CurrentState == player.MoveState)
@@ -182,8 +190,8 @@ public class PlayerAnimationController : MonoBehaviour
         if (player.StateMachine.CurrentState == player.StunState)
             requestDominantAnimation = PlayerAnimation.Hurt;
 
-        PlayerAnimation nextAnimation = ResolveAnimation(currentAnimation);
-        ChangeAnimation(nextAnimation);
+        PlayerAnimation nextAnimation = ResolveAnimation(currentAnimation, out bool restart);
+        ChangeAnimation(nextAnimation, restart);
 
         bool playerFacingDirection = player.IsFacingRight;
 
