@@ -1859,9 +1859,9 @@ MonoBehaviour:
     knockbackXDuration: 0.08
     knockbackYDuration: 0
     hitBox: {fileID: 1764899375}
-    windupTime: 0.15
-    activeTime: 0.15
-    recoveryTime: 0.2
+    windupTime: 0.13
+    activeTime: 0.13
+    recoveryTime: 0.13
     hitstunDuration: 0.2
   upAttack:
     damage: 20
@@ -1872,9 +1872,9 @@ MonoBehaviour:
     knockbackXDuration: 0
     knockbackYDuration: 0.04
     hitBox: {fileID: 1040759778}
-    windupTime: 0.15
-    activeTime: 0.15
-    recoveryTime: 0.2
+    windupTime: 0.13
+    activeTime: 0.13
+    recoveryTime: 0.13
     hitstunDuration: 0.2
   downAttack:
     damage: 20
@@ -1885,9 +1885,9 @@ MonoBehaviour:
     knockbackXDuration: 0
     knockbackYDuration: 0
     hitBox: {fileID: 1580531174}
-    windupTime: 0.15
-    activeTime: 0.15
-    recoveryTime: 0.2
+    windupTime: 0.13
+    activeTime: 0.13
+    recoveryTime: 0.13
     hitstunDuration: 0.2
   horizontalHitRecoilSpeed: 12
   recoilDuration: 0.1
