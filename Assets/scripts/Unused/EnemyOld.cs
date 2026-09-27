@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Enemy : Entity
+public class EnemyOld : Entity
 {
     #region Component
     public KinematicCharacterController Movement { get; private set; }
@@ -25,14 +25,8 @@ public class Enemy : Entity
     public float GravityScale => gravityScale;
     #endregion
 
-    #region StateMachine
-    public EnemyStateMachine StateMachine { get; private set; }
-    public EnemyIdleState IdleState { get; private set; }
-    #endregion
     private void Awake()
     {
-        StateMachine = new EnemyStateMachine();
-        IdleState = new EnemyIdleState(this, StateMachine);
 
         Movement = GetComponent<KinematicCharacterController>();
         Health = GetComponent<Health>();
@@ -48,7 +42,6 @@ public class Enemy : Entity
     }
     private void Start()
     {
-        StateMachine.Initialize(IdleState);
         Knockback.Initialize(ImpulseController);
     }
     private void Die()
@@ -57,7 +50,6 @@ public class Enemy : Entity
     }
     private void Update()
     {
-        StateMachine.CurrentState.FrameUpdate();
         MovementController.SetTarget(Detection.Target);
         Combat.SetTarget(Detection.Target);
         Combat.FrameUpdate();
