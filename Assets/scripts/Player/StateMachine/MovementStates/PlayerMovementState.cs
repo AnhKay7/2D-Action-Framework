@@ -6,10 +6,18 @@ public class PlayerMovementState : PlayerState
     {
     }
     protected virtual bool AllowDash => true;
+    protected virtual float GetDashDirection()
+    {
+        if (player.Input.MoveDirection != 0f)
+            return player.Input.MoveDirection;
+        
+        return player.IsFacingRight ? 1f : -1f;
+    }
     protected bool CheckDashTransition()
     {
         if (AllowDash && player.Input.DashInput && player.DashController.CanDash(player.Ground.IsGrounded))
         {
+            player.DashState.SetDashDirection(GetDashDirection());
             stateMachine.ChangeState(player.DashState);
             return true;
         }
