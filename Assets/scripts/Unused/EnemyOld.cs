@@ -50,7 +50,7 @@ public class EnemyOld : Entity
     }
     private void Update()
     {
-        MovementController.SetTarget(Detection.Target);
+        //MovementController.(Detection.Target);
         Combat.SetTarget(Detection.Target);
         Combat.FrameUpdate();
     }

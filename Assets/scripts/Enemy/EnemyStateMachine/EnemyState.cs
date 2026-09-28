@@ -10,7 +10,13 @@ public abstract class EnemyState
         this.enemy = enemy;
         this.stateMachine = stateMachine;
     }
+    protected bool IsTargetInAttackRange(Entity target)
+    {
+        if (target == null)
+            return false;
 
+        return PhysicsUtility.HorizontalDistance(enemy, target) <= enemy.Combat.AttackStartRange;
+    }
     public virtual void EnterState() { }
     public virtual void ExitState() { }
     public virtual bool FrameUpdate() {

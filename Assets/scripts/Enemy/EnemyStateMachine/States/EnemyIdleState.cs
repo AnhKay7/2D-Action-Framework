@@ -9,6 +9,25 @@ public class EnemyIdleState : EnemyState
     {
         if (base.FrameUpdate())
             return true;
-        return false;
+
+        Entity target = enemy.Detection.Target;
+        if (target == null)
+            return false;
+
+        enemy.AcquireTarget(target);
+
+        //if (IsTargetInAttackRange(target))
+        //{
+        //    stateMachine.ChangeState(enemy.AttackState);
+        //    return true;
+        //}
+
+        stateMachine.ChangeState(enemy.ReactState);
+        return true;
+    }
+    public override void PhysicsUpdate()
+    {
+        base.PhysicsUpdate();
+        enemy.VelocityResolver.SetBaseX(0f);
     }
 }

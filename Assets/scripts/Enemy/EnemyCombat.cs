@@ -17,8 +17,8 @@ public class EnemyCombat : MonoBehaviour
     #endregion
 
     #region Setting
-    [SerializeField] private float allowAttackDistance = 2f;
-
+    [SerializeField] private float attackStartRange = 2f;
+    public float AttackStartRange => attackStartRange;
     #endregion
 
     #region Variable & Helper
@@ -72,7 +72,7 @@ public class EnemyCombat : MonoBehaviour
         else if (target != null)
         {
             float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
-            if (distance <= allowAttackDistance)
+            if (distance <= attackStartRange)
             {
                 TryAttack();
             }
