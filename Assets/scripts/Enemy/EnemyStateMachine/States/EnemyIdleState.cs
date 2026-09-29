@@ -16,18 +16,13 @@ public class EnemyIdleState : EnemyState
 
         enemy.AcquireTarget(target);
 
-        //if (IsTargetInAttackRange(target))
-        //{
-        //    stateMachine.ChangeState(enemy.AttackState);
-        //    return true;
-        //}
+        if (IsTargetInAttackRange(target))
+        {
+            stateMachine.ChangeState(enemy.AttackState);
+            return true;
+        }
 
         stateMachine.ChangeState(enemy.ReactState);
         return true;
-    }
-    public override void PhysicsUpdate()
-    {
-        base.PhysicsUpdate();
-        enemy.VelocityResolver.SetBaseX(0f);
     }
 }

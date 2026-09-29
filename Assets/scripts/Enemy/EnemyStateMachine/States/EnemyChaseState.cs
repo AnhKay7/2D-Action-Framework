@@ -5,27 +5,25 @@ public class EnemyChaseState : EnemyState
     public EnemyChaseState(Enemy enemy, EnemyStateMachine stateMachine) : base(enemy, stateMachine)
     {
     }
-    private bool IsTargetOutOfRange(Entity target)
-    {
-        return PhysicsUtility.HorizontalDistance(enemy, enemy.CurrentTarget) > enemy.ChaseRange;
-    }
     public override bool FrameUpdate()
     {
         if (base.FrameUpdate())
             return true;
 
         Entity target = enemy.CurrentTarget;
-        if (IsTargetOutOfRange(target))
+        if (IsTargetOutOfRange(target, enemy.ChaseRange))
         {
-            Entity newTarget = enemy.Detection.Target;
-            if (newTarget == null)
+            Entity detectedTarget = enemy.Detection.Target;
+
+            if (detectedTarget != null)
             {
-                stateMachine.ChangeState(enemy.RecoveryState);
-                return true;
+                enemy.AcquireTarget(detectedTarget);
+                target = detectedTarget;
             }
             else
             {
-                enemy.AcquireTarget(newTarget);
+                stateMachine.ChangeState(enemy.RecoveryState);
+                return true;
             }
         }
 

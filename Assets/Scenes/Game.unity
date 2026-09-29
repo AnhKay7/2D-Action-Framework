@@ -687,6 +687,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   faction: 2
+  reactTime: 2
+  chaseRange: 12
+  giveUpOnLostTargetTime: 2
   gravityScale: 5
 --- !u!114 &570564411
 MonoBehaviour:
@@ -728,12 +731,12 @@ MonoBehaviour:
     knockbackXDuration: 0.2
     knockbackYDuration: 0.025
     hitBox: {fileID: 762774784}
-    windupTime: 0.3
-    activeTime: 0.1
-    recoveryTime: 0.3
+    windupTime: 0.5714286
+    activeTime: 0.14285715
+    recoveryTime: 0.64285713
     hitstunDuration: 0.3
   combatPivot: {fileID: 659673742}
-  allowAttackDistance: 2
+  attackStartRange: 3
 --- !u!114 &570564413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1204,6 +1207,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1063117767}
   - component: {fileID: 1063117769}
+  - component: {fileID: 1063117770}
   - component: {fileID: 1063117768}
   m_Layer: 8
   m_Name: Visual
@@ -1309,6 +1313,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1063117770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063117766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f79688521613cb44497f04cb680c2cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationController
 --- !u!1 &1239933131
 GameObject:
   m_ObjectHideFlags: 0
@@ -1526,7 +1542,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 10, y: 4}
+  m_Size: {x: 14, y: 4}
   m_EdgeRadius: 0
 --- !u!114 &1282534408
 MonoBehaviour:
@@ -1785,7 +1801,7 @@ Transform:
   m_GameObject: {fileID: 1687913269}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 11, y: -4.75, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2284,7 +2300,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4, y: 2}
+  m_Size: {x: 3.5, y: 2}
   m_EdgeRadius: 0
 --- !u!4 &1764899377
 Transform:

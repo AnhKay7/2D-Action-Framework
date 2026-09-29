@@ -1,9 +1,11 @@
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public abstract class EnemyState
 {
     protected Enemy enemy;
     protected EnemyStateMachine stateMachine;
+    public virtual bool CanTurn => true;
 
     protected EnemyState(Enemy enemy, EnemyStateMachine stateMachine)
     {
@@ -16,6 +18,12 @@ public abstract class EnemyState
             return false;
 
         return PhysicsUtility.HorizontalDistance(enemy, target) <= enemy.Combat.AttackStartRange;
+    }
+    protected bool IsTargetOutOfRange(Entity target, float range)
+    {
+        if (target == null)
+            return true;
+        return PhysicsUtility.HorizontalDistance(enemy, target) > range;
     }
     public virtual void EnterState() { }
     public virtual void ExitState() { }

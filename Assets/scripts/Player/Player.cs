@@ -76,8 +76,6 @@ public class Player : Entity
     #region Runtime Systems
     public ImpulseController ImpulseController { get; private set; } = new ImpulseController();
     public VelocityResolver VelocityResolver { get; private set; } = new VelocityResolver();
-    public int FacingDirection { get; private set; } = 1;
-    public bool IsFacingRight => FacingDirection > 0;
     #endregion
 
     #region StateMachine
@@ -166,13 +164,6 @@ public class Player : Entity
         ConsumeGroundedTime();
         ConsumeOnWallTime();
         Input.UseJumpInput();
-    }
-    public void SetFacingDirection(int direction)
-    {
-        if (direction == 0)
-            return;
-
-        FacingDirection = direction;
     }
     private void HandleActionRequests()
     {

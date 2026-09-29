@@ -14,4 +14,14 @@ public class Entity : MonoBehaviour
     public Faction EntityFaction => faction;
     public virtual bool CanReceiveHit => true;
     public virtual bool IsAlive => true;
+    public int FacingDirection { get; protected set; } = 1;
+    public virtual bool IsFacingRight => FacingDirection > 0;
+
+    public virtual void SetFacingDirection(int direction)
+    {
+        if (direction == 0)
+            return;
+
+        FacingDirection = direction > 0 ? 1 : -1;
+    }
 }

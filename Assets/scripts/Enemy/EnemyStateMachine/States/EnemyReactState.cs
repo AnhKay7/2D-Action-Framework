@@ -30,9 +30,4 @@ public class EnemyReactState : EnemyState
         }
         return false;
     }
-    public override void PhysicsUpdate()
-    {
-        base.PhysicsUpdate();
-        enemy.VelocityResolver.SetBaseX(0f);
-    }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class EnemyCombat : MonoBehaviour
@@ -25,6 +26,10 @@ public class EnemyCombat : MonoBehaviour
     private int currentHorizontalAttackDirection;
     #endregion
 
+    #region Status & Event
+    public bool IsAttacking => attackExecutor.IsAttacking();
+    public event Action<AttackData, int> AttackStarted;
+    #endregion
     private void Awake()
     {
         owner = GetComponentInParent<Entity>();
@@ -39,6 +44,10 @@ public class EnemyCombat : MonoBehaviour
     public void SetTarget(Entity target)
     {
         this.target = target;
+    }
+    public void ResetTarget()
+    {
+        target = null;
     }
     private void UpdateCombatPivot(int facingDirection)
     {
@@ -55,8 +64,12 @@ public class EnemyCombat : MonoBehaviour
         float deltaX = target.transform.position.x - transform.position.x;
         currentHorizontalAttackDirection = deltaX > 0 ? 1 : -1;
 
-        UpdateCombatPivot(currentHorizontalAttackDirection);
-        attackExecutor.TryStartAttack(horizontalAttack);
+        if (attackExecutor.TryStartAttack(horizontalAttack))
+        {
+            owner.SetFacingDirection(currentHorizontalAttackDirection);
+            UpdateCombatPivot(currentHorizontalAttackDirection);
+            AttackStarted?.Invoke(horizontalAttack, currentHorizontalAttackDirection);
+        }
     }
     public void FrameUpdate(bool stateAllowAttack = true)
     {

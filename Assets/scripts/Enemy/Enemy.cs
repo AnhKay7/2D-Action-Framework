@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Enemy : Entity
 {
@@ -8,7 +9,7 @@ public class Enemy : Entity
     public float ReactTime => reactTime;
     [SerializeField] private float chaseRange;
     public float ChaseRange => chaseRange;
-    private float giveUpOnLostTargetTime = 4f;
+    [SerializeField] private float giveUpOnLostTargetTime;
     public float GiveUpOnLostTargetTime => giveUpOnLostTargetTime;
     #endregion
     #region Component
@@ -74,8 +75,8 @@ public class Enemy : Entity
     }
     private void Update()
     {
+        UpdateFacingDirection();
         StateMachine.CurrentState.FrameUpdate();
-        Combat.SetTarget(Detection.Target);
         Combat.FrameUpdate();
     }
     private void FixedUpdate()
@@ -88,6 +89,7 @@ public class Enemy : Entity
         float gravity = Physics2D.gravity.y * gravityScale * Time.fixedDeltaTime;
         VelocityResolver.SetBaseY(velocityY + gravity);
 
+        StateMachine.CurrentState.PhysicsUpdate();
         Movement.PhysicsUpdate(VelocityResolver);
         Combat.PhysicsUpdate(VelocityResolver);
         ImpulseController.PhysicsUpdate(VelocityResolver);
@@ -106,6 +108,22 @@ public class Enemy : Entity
     public void ClearCurrentTarget()
     {
         CurrentTarget = null;
+    }
+    #endregion
+    #region Entity
+    private void UpdateFacingDirection()
+    {
+        if (StateMachine.CurrentState.CanTurn)
+        {
+            if (CurrentTarget == null)
+                return;
+
+            float deltaX = CurrentTarget.transform.position.x - transform.position.x;
+
+            int direction = deltaX > 0 ? 1 : -1;
+
+            SetFacingDirection(direction);
+        }
     }
     #endregion
 }
