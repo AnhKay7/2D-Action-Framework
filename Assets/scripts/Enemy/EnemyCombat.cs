@@ -71,18 +71,14 @@ public class EnemyCombat : MonoBehaviour
             AttackStarted?.Invoke(horizontalAttack, currentHorizontalAttackDirection);
         }
     }
-    public void FrameUpdate(bool stateAllowAttack = true)
+    public void CancelAttack()
     {
-        bool notAllowToAttack = !stateAllowAttack;
-        if (hitstunReceiver != null)
-            notAllowToAttack = notAllowToAttack || hitstunReceiver.IsHitstunned;
-
-        if (notAllowToAttack)
-        {
-            if (attackExecutor.IsAttacking())
-                attackExecutor.CancelAttack();
-        }
-        else if (target != null)
+        if (attackExecutor.IsAttacking())
+            attackExecutor.CancelAttack();
+    }
+    public void FrameUpdate()
+    {
+        if (target != null)
         {
             float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
             if (distance <= attackStartRange)

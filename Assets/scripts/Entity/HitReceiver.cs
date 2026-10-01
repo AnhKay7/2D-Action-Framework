@@ -23,7 +23,8 @@ public class HitReceiver : MonoBehaviour
     {
         ApplyDamage(attackData);
         ApplyKnockback(attackData, attackDirection);
-        ApplyHitstun(attackData);
+        if (owner.CanBeInterrupted)
+            ApplyHitstun(attackData);
         ApplyHitReaction();
     }
     private void ApplyDamage(AttackData attackData)

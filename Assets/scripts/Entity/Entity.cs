@@ -14,6 +14,7 @@ public class Entity : MonoBehaviour
     public Faction EntityFaction => faction;
     public virtual bool CanReceiveHit => true;
     public virtual bool IsAlive => true;
+    public virtual bool CanBeInterrupted => true;
     public int FacingDirection { get; protected set; } = 1;
     public virtual bool IsFacingRight => FacingDirection > 0;
 

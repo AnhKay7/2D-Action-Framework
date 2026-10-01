@@ -22,6 +22,7 @@ public class Enemy : Entity
     public KnockbackReceiver Knockback { get; private set; }
     public HitstunReceiver HitstunReceiver { get; private set; }
     public HitReceiver HitReceiver { get; private set; }
+    public EnemyAnimationController EnemyAnimationController { get; private set; }
     #endregion
 
     #region Runtime Systems & Variable
@@ -42,6 +43,8 @@ public class Enemy : Entity
     public EnemyReactState ReactState { get; private set; }
     public EnemyAttackState AttackState { get; private set; }
     public EnemyRecoveryState RecoveryState { get; private set; }
+    public EnemyStunState StunState { get; private set; }
+    public EnemyDeathState DeathState { get; private set; }
     #endregion
     private void Awake()
     {
@@ -51,6 +54,8 @@ public class Enemy : Entity
         ReactState = new EnemyReactState(this, StateMachine);
         AttackState = new EnemyAttackState(this, StateMachine);
         RecoveryState = new EnemyRecoveryState(this, StateMachine);
+        StunState = new EnemyStunState(this, StateMachine);
+        DeathState = new EnemyDeathState(this, StateMachine);
 
         Kinematic = GetComponent<KinematicCharacterController>();
         Health = GetComponent<Health>();
@@ -61,7 +66,9 @@ public class Enemy : Entity
         Knockback = GetComponent<KnockbackReceiver>();
         HitstunReceiver = GetComponent<HitstunReceiver>();
         HitReceiver = GetComponent<HitReceiver>();
+        EnemyAnimationController = GetComponentInChildren<EnemyAnimationController>();
 
+        EnemyAnimationController.DeathAnimationFinish += DestroyOnDeath;
         Health.OnDeath += Die;
     }
     private void Start()
@@ -69,12 +76,14 @@ public class Enemy : Entity
         StateMachine.Initialize(IdleState);
         Knockback.Initialize(ImpulseController);
     }
-    private void Die()
-    {
-        Destroy(gameObject);
-    }
     private void Update()
     {
+        if (deathRequested && StateMachine.CurrentState != DeathState)
+        {
+            StateMachine.ChangeState(DeathState);
+            return;
+        }
+
         UpdateFacingDirection();
         StateMachine.CurrentState.FrameUpdate();
         Combat.FrameUpdate();
@@ -111,6 +120,10 @@ public class Enemy : Entity
     }
     #endregion
     #region Entity
+    private bool deathRequested = false;
+    public override bool IsAlive => Health != null ? !Health.IsDead : base.IsAlive;
+    public override bool CanReceiveHit => IsAlive && (StateMachine?.CurrentState?.CanReceiveHit ?? false);
+    public override bool CanBeInterrupted => StateMachine?.CurrentState?.CanBeInterrupted ?? false;
     private void UpdateFacingDirection()
     {
         if (StateMachine.CurrentState.CanTurn)
@@ -124,6 +137,19 @@ public class Enemy : Entity
 
             SetFacingDirection(direction);
         }
+    }
+    public void RequestDeathAnimation()
+    {
+        EnemyAnimationController.RequestDeathAnimation();
+    }
+    private void Die()
+    {
+        deathRequested = true;
+        //Destroy(gameObject);
+    }
+    private void DestroyOnDeath()
+    {
+        Destroy(gameObject);
     }
     #endregion
 }

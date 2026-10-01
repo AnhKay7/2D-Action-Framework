@@ -6,7 +6,8 @@ public abstract class EnemyState
     protected Enemy enemy;
     protected EnemyStateMachine stateMachine;
     public virtual bool CanTurn => true;
-
+    public virtual bool CanReceiveHit => true;
+    public virtual bool CanBeInterrupted => true;
     protected EnemyState(Enemy enemy, EnemyStateMachine stateMachine)
     {
         this.enemy = enemy;
@@ -25,10 +26,21 @@ public abstract class EnemyState
             return true;
         return PhysicsUtility.HorizontalDistance(enemy, target) > range;
     }
+    protected bool CheckStunTransition()
+    {
+        if (CanReceiveHit && CanBeInterrupted && enemy.HitstunReceiver.IsHitstunned)
+        {
+            stateMachine.ChangeState(enemy.StunState);
+            return true;
+        }
+        return false;
+    }
     public virtual void EnterState() { }
     public virtual void ExitState() { }
     public virtual bool FrameUpdate() {
 
+        if (CheckStunTransition())
+            return true;
         return false;
     }
     public virtual void PhysicsUpdate() { }

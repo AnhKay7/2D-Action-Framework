@@ -6,6 +6,7 @@ public class EnemyAttackState : EnemyState
     {
     }
     public override bool CanTurn => false;
+    public override bool CanBeInterrupted => false;
     public override void EnterState()
     {
         base.EnterState();

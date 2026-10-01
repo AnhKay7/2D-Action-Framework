@@ -16,11 +16,6 @@ public class EnemyMovement : MonoBehaviour
 
     public void PhysicsUpdate(VelocityResolver VelocityResolver)
     {
-        if (hitstunReceiver != null && hitstunReceiver.IsHitstunned)
-        {
-            VelocityResolver.SetBaseX(0f);
-            return;
-        }
         VelocityResolver.SetBaseX(requestDirection * moveSpeed);
         requestDirection = 0;
     }
