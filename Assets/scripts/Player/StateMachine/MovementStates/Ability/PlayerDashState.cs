@@ -9,24 +9,15 @@ public class PlayerDashState : PlayerAbilityState
     public PlayerDashState(Player _player, PlayerStateMachine _stateMachine) : base(_player, _stateMachine)
     {
     }
-
+    public void SetDashDirection(float DashDirection)
+    {
+        dashDirection = DashDirection;
+    }
     public override void EnterState()
     {
         base.EnterState();
         player.Input.UseDashInput();
-
-        if (player.Wall.IsTouchingWall)
-        {
-            dashDirection = -player.Wall.WallDirection;
-        }
-        else if (player.Input.MoveDirection != 0f)
-        {
-            dashDirection = player.Input.MoveDirection;
-        }
-        else
-        {
-            dashDirection = player.IsFacingRight ? 1f : -1f;
-        }
+        player.SetFacingDirection((int)dashDirection);
 
         player.DashController.ConsumeDash(player.Ground.IsGrounded);
         abilityEndTime = Time.time + player.DashController.DashDuration;

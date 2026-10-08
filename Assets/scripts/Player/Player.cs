@@ -76,8 +76,6 @@ public class Player : Entity
     #region Runtime Systems
     public ImpulseController ImpulseController { get; private set; } = new ImpulseController();
     public VelocityResolver VelocityResolver { get; private set; } = new VelocityResolver();
-    public int FacingDirection { get; private set; } = 1;
-    public bool IsFacingRight => FacingDirection > 0;
     #endregion
 
     #region StateMachine
@@ -167,13 +165,6 @@ public class Player : Entity
         ConsumeOnWallTime();
         Input.UseJumpInput();
     }
-    public void SetFacingDirection(int direction)
-    {
-        if (direction == 0)
-            return;
-
-        FacingDirection = direction;
-    }
     private void HandleActionRequests()
     {
         if (Input.AttackInput)
@@ -198,8 +189,8 @@ public class Player : Entity
 
     #region Entity
     //protected override Faction EntityFration => Faction.Player;
-    public override bool CanReceiveHit => StateMachine?.CurrentState?.CanReceiveHit ?? false;
     public override bool IsAlive => Health != null ? !Health.IsDead : base.IsAlive;
+    public override bool CanReceiveHit => IsAlive && (StateMachine?.CurrentState?.CanReceiveHit ?? false);
     private void Die()
     {
         Input.DisableInput();

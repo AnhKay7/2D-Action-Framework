@@ -110,7 +110,7 @@ public class PlayerCombatController : MonoBehaviour
         if (currentAttack == downAttack)
         {
             impulseController.ApplyVerticalOverrideVelocityOneshot(
-                PlayerPhysicsUtility.CalculateLaunchVelocity(pogoLauchedHeigth, Physics2D.gravity.y * gravityScale)
+                PhysicsUtility.CalculateLaunchVelocity(pogoLauchedHeigth, Physics2D.gravity.y * gravityScale)
                 );
         }
 

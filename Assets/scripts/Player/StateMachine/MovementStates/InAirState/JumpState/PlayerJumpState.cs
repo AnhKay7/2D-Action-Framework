@@ -20,7 +20,7 @@ public class PlayerJumpState : PlayerInAirState
 
     private void ExecuteJump()
     {
-        float targetVelocityY = PlayerPhysicsUtility.CalculateLaunchVelocity(player.JumpHeight, Physics2D.gravity.y * player.GravityScale);
+        float targetVelocityY = PhysicsUtility.CalculateLaunchVelocity(player.JumpHeight, Physics2D.gravity.y * player.GravityScale);
         
         if (!player.Input.JumpHeld)
         {

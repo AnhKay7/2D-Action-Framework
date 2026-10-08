@@ -5,7 +5,10 @@ public class PlayerWallSlideState : PlayerMovementState
     public PlayerWallSlideState(Player _player, PlayerStateMachine _stateMachine) : base(_player, _stateMachine)
     {
     }
-
+    protected override float GetDashDirection()
+    {
+        return -player.Wall.WallDirection;
+    }
     public override bool FrameUpdate()
     {
         if (base.FrameUpdate())

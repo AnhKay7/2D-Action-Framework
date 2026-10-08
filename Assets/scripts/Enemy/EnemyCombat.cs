@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class EnemyCombat : MonoBehaviour
@@ -17,14 +18,18 @@ public class EnemyCombat : MonoBehaviour
     #endregion
 
     #region Setting
-    [SerializeField] private float allowAttackDistance = 2f;
-
+    [SerializeField] private float attackStartRange = 2f;
+    public float AttackStartRange => attackStartRange;
     #endregion
 
     #region Variable & Helper
     private int currentHorizontalAttackDirection;
     #endregion
 
+    #region Status & Event
+    public bool IsAttacking => attackExecutor.IsAttacking();
+    public event Action<AttackData, int> AttackStarted;
+    #endregion
     private void Awake()
     {
         owner = GetComponentInParent<Entity>();
@@ -39,6 +44,10 @@ public class EnemyCombat : MonoBehaviour
     public void SetTarget(Entity target)
     {
         this.target = target;
+    }
+    public void ResetTarget()
+    {
+        target = null;
     }
     private void UpdateCombatPivot(int facingDirection)
     {
@@ -55,24 +64,24 @@ public class EnemyCombat : MonoBehaviour
         float deltaX = target.transform.position.x - transform.position.x;
         currentHorizontalAttackDirection = deltaX > 0 ? 1 : -1;
 
-        UpdateCombatPivot(currentHorizontalAttackDirection);
-        attackExecutor.TryStartAttack(horizontalAttack);
-    }
-    public void FrameUpdate(bool stateAllowAttack = true)
-    {
-        bool notAllowToAttack = !stateAllowAttack;
-        if (hitstunReceiver != null)
-            notAllowToAttack = notAllowToAttack || hitstunReceiver.IsHitstunned;
-
-        if (notAllowToAttack)
+        if (attackExecutor.TryStartAttack(horizontalAttack))
         {
-            if (attackExecutor.IsAttacking())
-                attackExecutor.CancelAttack();
+            owner.SetFacingDirection(currentHorizontalAttackDirection);
+            UpdateCombatPivot(currentHorizontalAttackDirection);
+            AttackStarted?.Invoke(horizontalAttack, currentHorizontalAttackDirection);
         }
-        else if (target != null)
+    }
+    public void CancelAttack()
+    {
+        if (attackExecutor.IsAttacking())
+            attackExecutor.CancelAttack();
+    }
+    public void FrameUpdate()
+    {
+        if (target != null)
         {
             float distance = Mathf.Abs(target.transform.position.x - transform.position.x);
-            if (distance <= allowAttackDistance)
+            if (distance <= attackStartRange)
             {
                 TryAttack();
             }
