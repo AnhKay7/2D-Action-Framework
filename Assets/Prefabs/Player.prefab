@@ -814,7 +814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a9ba83d68ee6b240bc98e0ffb66b07e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDashController
-  <DashSpeed>k__BackingField: 25
+  <DashSpeed>k__BackingField: 20
   <DashDuration>k__BackingField: 0.2
   <DashCooldown>k__BackingField: 0.5
   <MaxAirDashes>k__BackingField: 1
@@ -898,7 +898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2396a44cb54cba743a4c4b53d7fa23ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 100
+  maxHealth: 5
 --- !u!114 &4883305878145410848
 MonoBehaviour:
   m_ObjectHideFlags: 0

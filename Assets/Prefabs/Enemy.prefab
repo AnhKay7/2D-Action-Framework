@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
   horizontalAttack:
-    damage: 20
+    damage: 1
     applyXKnockback: 1
     knockbackX: 12
     applyYKnockback: 1
@@ -362,7 +362,7 @@ MonoBehaviour:
     recoveryTime: 0.64285713
     hitstunDuration: 0.3
   combatPivot: {fileID: 6486559835772319875}
-  attackStartRange: 3
+  attackStartRange: 2
 --- !u!114 &6135780345364682590
 MonoBehaviour:
   m_ObjectHideFlags: 0
