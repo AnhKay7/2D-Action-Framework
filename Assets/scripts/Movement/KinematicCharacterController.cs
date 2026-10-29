@@ -4,7 +4,17 @@ public class KinematicCharacterController : MonoBehaviour
 {
     public float velocityX { get; private set; } = 0f;
     public float velocityY { get; private set; } = 0f;
+    public Vector2 PreviousPosition { get; private set; }
+    public Vector2 CurrentPosition { get; private set; }
 
+    public Vector2 InterpolatedPosition
+    {
+        get
+        {
+            float alpha = Mathf.Clamp01((Time.time - Time.fixedTime) / Time.fixedDeltaTime);
+            return Vector2.Lerp(PreviousPosition, CurrentPosition, alpha);
+        }
+    }
 
     [Header("Collision Prediction")]
     [SerializeField] private LayerMask groundLayer;
@@ -19,6 +29,7 @@ public class KinematicCharacterController : MonoBehaviour
     private void Awake()
     {
         col = GetComponent<Collider2D>();
+        PreviousPosition = CurrentPosition = transform.position;
     }
     public void SetVelocityXY(float x, float y)
     {
@@ -39,6 +50,8 @@ public class KinematicCharacterController : MonoBehaviour
     }
     private void ApplyMovement()
     {
+        PreviousPosition = transform.position;
+
         float expectedDeltaX = velocityX * Time.fixedDeltaTime;
         float expectedDeltaY = velocityY * Time.fixedDeltaTime;
 
@@ -50,6 +63,8 @@ public class KinematicCharacterController : MonoBehaviour
         if (delta_y != expectedDeltaY)
             velocityY = 0f;
         transform.Translate(new Vector3(delta_x, delta_y, 0f));
+
+        CurrentPosition = transform.position;
     }
 
     private float ResolveVerticalCollision(float expectedDeltaY)

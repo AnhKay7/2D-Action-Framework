@@ -188,7 +188,6 @@ public class Player : Entity
     }
 
     #region Entity
-    //protected override Faction EntityFration => Faction.Player;
     public override bool IsAlive => Health != null ? !Health.IsDead : base.IsAlive;
     public override bool CanReceiveHit => IsAlive && (StateMachine?.CurrentState?.CanReceiveHit ?? false);
     private void Die()

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TrainningDummy : Entity
+public class TrainingDummy : Entity
 {
     [SerializeField] private Health health;
     private void Awake()

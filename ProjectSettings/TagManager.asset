@@ -16,7 +16,7 @@ TagManager:
   - Entity
   - AttackHitBox
   - Detection
-  - 
+  - CameraBound
   - 
   - 
   - 
